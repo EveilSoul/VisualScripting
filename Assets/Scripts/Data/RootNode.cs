@@ -26,6 +26,8 @@ public class RootNode : Node
 
     public static void OnLoadingStart()
     {
-        Destroy(instance.gameObject);
+        if (instance != null)
+            Destroy(instance.gameObject);
+        instance = null;
     }
 }
