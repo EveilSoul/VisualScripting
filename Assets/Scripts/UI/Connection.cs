@@ -1,19 +1,27 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Connection : MonoBehaviour
 {
-    public Transform Input;
-    public Transform Output;
+    public RectTransform Input;
+    public RectTransform Output;
 
     public void OnPointerEnter()
     {
-        GraphController.CurrentConnection = this;
+        ConnectionManager.Current = this;
     }
 
     public void OnPoinerExit()
     {
-        GraphController.CurrentConnection = null;
+        //ConnectionManager.Current = null;
     }
+}
+
+public struct ConnectionInfo
+{
+    public Connection StartPoint;
+    public Connection FinishPoint;
+    public LineRenderer ConnectionLine;
 }

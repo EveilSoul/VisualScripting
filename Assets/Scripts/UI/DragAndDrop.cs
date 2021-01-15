@@ -6,11 +6,17 @@ using UnityEngine.EventSystems;
 public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler, IEndDragHandler, IDragHandler
 {
     [SerializeField] private Canvas canvas;
+
+    public bool HasConnections;
+    private Connection connection;
+
     private RectTransform rectTransform;
 
     private void Awake()
     {
         rectTransform = gameObject.GetComponent<RectTransform>();
+        connection = gameObject.GetComponent<Connection>();
+        canvas = GetComponentInParent<Canvas>();
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -31,5 +37,7 @@ public class DragAndDrop : MonoBehaviour, IPointerDownHandler, IBeginDragHandler
     public void OnDrag(PointerEventData eventData)
     {
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        if (HasConnections)
+            ConnectionManager.OnNodeMove(connection);
     }
 }

@@ -22,7 +22,7 @@ public class DataManager: MonoBehaviour
     }
 
 
-    public List<Node> Nodes = new List<Node>();
+    public List<Saving_Node> Nodes = new List<Saving_Node>();
 
     public List<Character> Characters = new List<Character>()
     {

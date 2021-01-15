@@ -6,30 +6,51 @@ using UnityEngine.UI;
 
 public class GraphController : MonoBehaviour
 {
+    private static GraphController instance;
+
     public static Vector3 MousePosition => Input.mousePosition - new Vector3(Screen.width, Screen.height) / 2;
 
-    public GameObject NodePrefab;
-    public GameObject ConnectionLinePrefab;
-
+    public GameObject ActionNodePrefab;
+    public GameObject RootNodePrefab;
     public GameObject Background;
 
     public GameObject CreationMenu;
     public GameObject NodeMenu;
 
-    public static Connection CurrentConnection;
+    public Vector2 DuplicateOffset;
 
     private bool canCloseCreationMenu;
-    private bool canOpenCreationMenu = true;
+    private bool IsPointerOutNode = true;
+    private bool isOneClick;
 
-    private bool isDrawingLine;
+    private Outline selectedNode;
 
-    private LineRenderer currentLine;
+    [ContextMenu("Reset Nodes ID")]
+    public void ResetNodesId()
+    {
+        PlayerPrefs.SetInt("NodeId", 1);
+    }
+
+    public static void AddNodes(NodesData data)
+    {
+        foreach (var node in FindObjectsOfType<Node>())
+            data.Nodes.Add(new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null });
+    }
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        instance = this;
         CreationMenu.SetActive(false);
         NodeMenu.SetActive(false);
+        DataStorage.OnSceneClearing += OnSceneClearing;
+    }
+
+    public void OnSceneClearing()
+    {
+        isOneClick = false;
+        selectedNode = null;
+        IsPointerOutNode = true;
     }
 
     // Update is called once per frame
@@ -37,7 +58,7 @@ public class GraphController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(1))
         {
-            if (canOpenCreationMenu)
+            if (IsPointerOutNode)
                 EnableCreationMenu();
             else EnableNodeMenu();
         }
@@ -47,36 +68,56 @@ public class GraphController : MonoBehaviour
             CreationMenu.SetActive(false);
         }
 
-        if (currentLine != null)
-            currentLine.SetPosition(1, MousePosition);
+        if (NodeMenu.activeInHierarchy && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0) && canCloseCreationMenu))
+        {
+            HideNodeMenu();
+        }
 
-        if (Input.GetMouseButton(0) && currentLine != null)
-            FinishConnection();
+        if (Input.GetMouseButtonDown(0) && !IsPointerOutNode)
+        {
+            isOneClick = !isOneClick;
+            if (!isOneClick)
+            {
+                selectedNode.enabled = false;
+            }
+            if (isOneClick || ConnectionManager.Current.gameObject != selectedNode.gameObject)
+            {
+                if (selectedNode != null)
+                {
+                    selectedNode.enabled = false;
+                    if (ConnectionManager.Current.gameObject != selectedNode.gameObject)
+                    {
+                        isOneClick = true;
+                    }
+                }
+                selectedNode = ConnectionManager.Current.GetComponent<Outline>();
+                selectedNode.enabled = true;
+            }
+        }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            if (selectedNode != null)
+            {
+                selectedNode.enabled = false;
+            }
+        }
     }
 
     private void EnableNodeMenu()
     {
         NodeMenu.SetActive(true);
         MoveMenu(NodeMenu);
-    }   
-
-    public void StartConnection()
-    {
-        currentLine = Instantiate(ConnectionLinePrefab, Background.transform).GetComponent<LineRenderer>();
-        currentLine.SetPositions(new[] { CurrentConnection.Output.position });
-    }
-
-    public void FinishConnection()
-    {
-        currentLine.SetPosition(1, CurrentConnection.Input.position);
-        currentLine = null;
-        CurrentConnection = null;
     }
 
     private void EnableCreationMenu()
     {
         CreationMenu.SetActive(true);
         MoveMenu(CreationMenu);
+    }
+
+    public static void HideNodeMenu()
+    {
+        instance.NodeMenu.SetActive(false);
     }
 
     private void MoveMenu(GameObject menu)
@@ -86,16 +127,47 @@ public class GraphController : MonoBehaviour
         menuTransform.anchoredPosition = MousePosition + offset;
     }
 
-    public void InstantiateNode(GameObject nodePrefab)
+    public void OnInstantiateNodeButtonClick(GameObject nodePrefab) => InstantiateNode(nodePrefab);
+
+
+    public GameObject InstantiateNode(GameObject nodePrefab)
     {
         var node = Instantiate(nodePrefab, Background.transform);
         node.GetComponent<RectTransform>().anchoredPosition = MousePosition;
+        node.GetComponent<Node>().InitializeID();
         CreationMenu.SetActive(false);
+        return node;
     }
 
-    public void OnMenuPointerEnter() => canCloseCreationMenu = false;
-    public void OnMenuPinterExit() => canCloseCreationMenu = true;
+    public static GameObject InstantiateDefaultActionNode()
+    {
+        var node = Instantiate(instance.ActionNodePrefab, instance.Background.transform);
+        return node;
+    }
 
-    public void OnNodePointerEnter() => canOpenCreationMenu = false;
-    public void OnNodePinterExit() => canOpenCreationMenu = true;
+    public static GameObject InstantiateRootNode()
+    {
+        var node = Instantiate(instance.RootNodePrefab, instance.Background.transform);
+        return node;
+    }
+
+    public void RemoveSelectedNode()
+    {
+        ConnectionManager.RemoveAllConnectionsByNode(ConnectionManager.Current);
+        Destroy(ConnectionManager.Current.gameObject);
+        HideNodeMenu();
+    }
+
+    public void DuplicateSelectedNode()
+    {
+        var node = Instantiate(ConnectionManager.Current, Background.transform);
+        node.GetComponent<RectTransform>().anchoredPosition += DuplicateOffset;
+        HideNodeMenu();
+    }
+
+    public void OnMenuPointerEnter() => instance.canCloseCreationMenu = false;
+    public void OnMenuPinterExit() => instance.canCloseCreationMenu = true;
+
+    public void OnNodePointerEnter() => instance.IsPointerOutNode = false;
+    public void OnNodePinterExit() => instance.IsPointerOutNode = true;
 }

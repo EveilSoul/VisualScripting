@@ -50,7 +50,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         if (DataManager.instance.Nodes.Select(x => x.Id).Contains(id))
             DataManager.instance.Nodes.Remove(DataManager.instance.Nodes.First(x => x.Id == id));
 
-        var node = new Node();
+        var node = new Saving_Node();
         var condition = new Condition();
         condition.NodeCharacters = new List<NodeCharacter>();
         var effect = new Effect();

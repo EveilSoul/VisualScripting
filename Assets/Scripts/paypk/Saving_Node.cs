@@ -25,7 +25,7 @@ public struct Effect
     public List<NodeCharacter> NodeCharacters;
 }
 
-public struct Node 
+public struct Saving_Node
 {
     public int Id;
     public List<string> CharacterNames;
