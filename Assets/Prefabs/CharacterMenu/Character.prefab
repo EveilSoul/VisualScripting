@@ -280,7 +280,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 4516691986601830968}
         m_TargetAssemblyTypeName: CharacterPropert, Assembly-CSharp
-        m_MethodName: UpdateCharactrInfoPanel
+        m_MethodName: UpdateCharacterInfoPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

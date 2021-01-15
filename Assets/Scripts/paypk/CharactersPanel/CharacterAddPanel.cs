@@ -19,7 +19,7 @@ public class CharacterAddPanel : MonoBehaviour
     private bool inChange = false;
     private string prevName;
     private List<string> propertiesName;
-    private List<GameObject> panels; 
+    private List<GameObject> panels;
 
 
     private void OnEnable()
@@ -50,10 +50,11 @@ public class CharacterAddPanel : MonoBehaviour
         var character = DataManager.instance.Characters.First(x => x.Name == name);
         NameField.text = character.Name;
         Name = character.Name;
-        foreach (var p in character.Properties)
-        {
-            OnAddClick();
-        }
+        if (character.Properties != null)
+            foreach (var p in character.Properties)
+            {
+                OnAddClick();
+            }
 
 
         for (int i = 0; i < panels.Count; i++)
@@ -116,7 +117,7 @@ public class CharacterAddPanel : MonoBehaviour
 
     public void Save()
     {
-        var propsToAdd = panels.Select(x => x.GetComponent<CharacterAddProperty>()).Where(x => (x.Name != "" && x.Value != "" && x.Value!=null));
+        var propsToAdd = panels.Select(x => x.GetComponent<CharacterAddProperty>()).Where(x => (x.Name != "" && x.Value != "" && x.Value != null));
         if (Name != "")
         {
             if (inChange)
@@ -133,9 +134,9 @@ public class CharacterAddPanel : MonoBehaviour
                 character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
                 DataManager.instance.Characters.Add(character);
             }
-            
+
         }
-        
+
     }
 
 

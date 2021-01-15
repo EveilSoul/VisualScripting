@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +14,9 @@ public class GraphController : MonoBehaviour
     public GameObject ActionNodePrefab;
     public GameObject RootNodePrefab;
     public GameObject Background;
+    public GameObject PanelBackground;
+    public GameObject NodePanelPrefab;
+    public GameObject RootPanel;
 
     public GameObject CreationMenu;
     public GameObject NodeMenu;
@@ -21,7 +25,6 @@ public class GraphController : MonoBehaviour
 
     private bool canCloseCreationMenu;
     private bool IsPointerOutNode = true;
-    private bool isOneClick;
 
     private Outline selectedNode;
 
@@ -37,6 +40,19 @@ public class GraphController : MonoBehaviour
             data.Nodes.Add(new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null });
     }
 
+    public static void OnNodePointerClick(Node node)
+    {
+        if (instance.selectedNode == null || node.gameObject != instance.selectedNode.gameObject)
+        {
+            if (instance.selectedNode != null)
+            {
+                instance.selectedNode.enabled = false;
+            }
+            instance.selectedNode = node.GetComponent<Outline>();
+        }
+        instance.selectedNode.enabled = true;
+    }
+
     // Start is called before the first frame update
     void Awake()
     {
@@ -48,7 +64,6 @@ public class GraphController : MonoBehaviour
 
     public void OnSceneClearing()
     {
-        isOneClick = false;
         selectedNode = null;
         IsPointerOutNode = true;
     }
@@ -73,28 +88,7 @@ public class GraphController : MonoBehaviour
             HideNodeMenu();
         }
 
-        if (Input.GetMouseButtonDown(0) && !IsPointerOutNode)
-        {
-            isOneClick = !isOneClick;
-            if (!isOneClick)
-            {
-                selectedNode.enabled = false;
-            }
-            if (isOneClick || ConnectionManager.Current.gameObject != selectedNode.gameObject)
-            {
-                if (selectedNode != null)
-                {
-                    selectedNode.enabled = false;
-                    if (ConnectionManager.Current.gameObject != selectedNode.gameObject)
-                    {
-                        isOneClick = true;
-                    }
-                }
-                selectedNode = ConnectionManager.Current.GetComponent<Outline>();
-                selectedNode.enabled = true;
-            }
-        }
-        else if (Input.GetMouseButtonDown(0))
+        if (Input.GetMouseButtonDown(0) && IsPointerOutNode)
         {
             if (selectedNode != null)
             {
@@ -132,23 +126,39 @@ public class GraphController : MonoBehaviour
 
     public GameObject InstantiateNode(GameObject nodePrefab)
     {
-        var node = Instantiate(nodePrefab, Background.transform);
-        node.GetComponent<RectTransform>().anchoredPosition = MousePosition;
-        node.GetComponent<Node>().InitializeID();
+        var nodeObj = Instantiate(nodePrefab, Background.transform);
+        var panel = Instantiate(NodePanelPrefab, PanelBackground.transform);
+        nodeObj.GetComponent<RectTransform>().anchoredPosition = MousePosition;
+        Node node = nodeObj.GetComponent<Node>();
+        node.InitializeID();
+        node.Panel = panel;
+        InitializePanelId(node);
         CreationMenu.SetActive(false);
-        return node;
+        return nodeObj;
     }
 
     public static GameObject InstantiateDefaultActionNode()
     {
-        var node = Instantiate(instance.ActionNodePrefab, instance.Background.transform);
-        return node;
+        var nodeObj = Instantiate(instance.ActionNodePrefab, instance.Background.transform);
+        var panel = Instantiate(instance.NodePanelPrefab, instance.PanelBackground.transform);
+        Node node = nodeObj.GetComponent<Node>();
+        node.Panel = panel;
+
+        return nodeObj;
     }
 
     public static GameObject InstantiateRootNode()
     {
-        var node = Instantiate(instance.RootNodePrefab, instance.Background.transform);
-        return node;
+        var nodeObj = Instantiate(instance.RootNodePrefab, instance.Background.transform);
+        Node node = nodeObj.GetComponent<Node>();
+        node.Panel = instance.RootPanel;
+        InitializePanelId(node);
+        return nodeObj;
+    }
+
+    public static void InitializePanelId(Node node)
+    {
+        node.Panel.GetComponentsInChildren<Text>().First(x => x.name == "ID").text = node.Id.ToString();
     }
 
     public void RemoveSelectedNode()
@@ -160,9 +170,29 @@ public class GraphController : MonoBehaviour
 
     public void DuplicateSelectedNode()
     {
-        var node = Instantiate(ConnectionManager.Current, Background.transform);
-        node.GetComponent<RectTransform>().anchoredPosition += DuplicateOffset;
+        var nodeObj = Instantiate(ConnectionManager.Current, Background.transform);
+        nodeObj.GetComponent<RectTransform>().anchoredPosition += DuplicateOffset;
+        Node node = nodeObj.GetComponent<Node>();
+        node.Panel = Instantiate(node.Panel, PanelBackground.transform);
         HideNodeMenu();
+    }
+
+    public void SetNodeName(GameObject node)
+    {
+        var input = node.GetComponentsInChildren<InputField>().First(x => x.name == "NameField").text;
+        var id = int.Parse(node.GetComponentsInChildren<Text>().First(x => x.name == "ID").text);
+
+        if (input == "")
+            input = "Action";
+
+        FindObjectsOfType<Node>().First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
+    }
+
+    public void SaveNode(GameObject node)
+    { 
+        var id = int.Parse(node.GetComponentsInChildren<Text>().First(x => x.name == "ID").text);
+        instance.NodePanelPrefab.GetComponent<NodeData>().NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
+        //FindObjectsOfType<Node>().First(x => x.Id == id).panelMenu.Save(id);
     }
 
     public void OnMenuPointerEnter() => instance.canCloseCreationMenu = false;

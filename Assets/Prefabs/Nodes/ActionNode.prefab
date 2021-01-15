@@ -162,7 +162,7 @@ GameObject:
   - component: {fileID: 112552881079913524}
   - component: {fileID: 7913951504171687975}
   m_Layer: 5
-  m_Name: Text
+  m_Name: Name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -325,6 +325,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Id: 0
+  Panel: {fileID: 0}
 --- !u!114 &8144787978407473887
 MonoBehaviour:
   m_ObjectHideFlags: 0

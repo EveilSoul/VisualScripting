@@ -55,6 +55,8 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         condition.NodeCharacters = new List<NodeCharacter>();
         var effect = new Effect();
         effect.NodeCharacters = new List<NodeCharacter>();
+
+        node.Id = id;
         node.CharacterNames = characterNames;
         node.Text = text;
 
@@ -123,7 +125,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         if (DataManager.instance.Characters.Count > characterNames.Count)
             AddButton.SetActive(true);
 
-        var node = DataManager.instance.Nodes[id];
+        var node = DataManager.instance.Nodes.First(x => x.Id == id);
         foreach (var c in node.CharacterNames)
         {
             AddCharacter(c);

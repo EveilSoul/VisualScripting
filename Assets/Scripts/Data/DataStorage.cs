@@ -144,6 +144,7 @@ public class DataStorage : MonoBehaviour
                 nodeObject.transform.position = info.Position;
                 var node = nodeObject.GetComponent<Node>();
                 node.Id = info.Id;
+                GraphController.InitializePanelId(node);
                 instance.loadedNodes[info.Id] = nodeObject;
             }
         }

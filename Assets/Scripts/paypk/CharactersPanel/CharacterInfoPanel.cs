@@ -24,6 +24,11 @@ public class CharacterInfoPanel : MonoBehaviour
 
     public void SetProperties(List<CharacterProperty> properties)
     {
+        if (properties == null)
+        {
+            Properties.text = "";
+            return;
+        }
         var result = new StringBuilder();
 
         foreach (var p in properties)

@@ -6,6 +6,8 @@ public class RootNode : Node
 {
     private static RootNode instance;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -16,6 +18,8 @@ public class RootNode : Node
                 Id = GenerateID();
         }
         else Destroy(gameObject);
+
+        Panel.SetActive(false);
     }
 
     // Update is called once per frame
