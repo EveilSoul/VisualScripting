@@ -100,64 +100,8 @@ public class EffectsCharacterPanel : MonoBehaviour
         OnChangePropertyType("");
     }
 
-    public void Save()
+    public void DeleteMe()
     {
-        var propsToAdd = panels.Select(x => x.GetComponent<EffectsPanelCharacterProperty>()).Where(x => (x.Name != "" && x.Value != "" && x.Value != null));
-        if (Name != "")
-        {
-            if (inChange)
-            {
-                var character = DataManager.instance.Characters.Where(x => x.Name == prevName).First();
-                character.Name = Name;
-                character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
-                inChange = false;
-            }
-            else
-            {
-                var character = new Character();
-                character.Name = Name;
-                character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
-                DataManager.instance.Characters.Add(character);
-            }
-
-        }
-
+        NodeData.instance.EffectsPanel.GetComponent<EffectsPanel>().Delete(Name);
     }
-
-    //public GameObject Panel;
-    //public Transform Parent;
-
-    //public Text TextName;
-    //public string Name { get; set; }
-
-    //private List<GameObject> panels;
-    //private List<string> propertiesName;
-
-    //private void SetName(string name)
-    //{
-    //    TextName.text = name;
-    //    Name = name;
-    //    propertiesName = DataManager.instance.Characters.First(x => x.Name == name).Properties.Select(x => x.Name).ToList();
-    //}
-
-    //public void ClearPanels()
-    //{
-    //    foreach (var p in panels)
-    //    {
-    //        Destroy(p);
-    //    }
-    //    panels = new List<GameObject>();
-    //}
-
-    //public void AddPanel(string name)
-    //{
-    //    var panel = Instantiate(Panel, Parent);
-    //    panels.Add(panel);
-    //    panel.GetComponent<ConditionPanel>().SetName(name);
-    //}
-
-    //public List<string> GetMyProperties(string name)
-    //{
-    //    return propertiesName.Except(panels.Select(x => x.GetComponent<ConditionPanelCharacterProiperty>()).Select(x => x.Name).Where(x => x != name)).ToList();
-    //}
 }

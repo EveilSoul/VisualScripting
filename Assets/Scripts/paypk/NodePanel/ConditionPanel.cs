@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -42,6 +43,14 @@ public class ConditionPanel : MonoBehaviour
         panels.Select(x => x.GetComponent<ConditionCharacterPanel>()).First(x => x.Name == parentName).OnChangePropertyType(name);
     }
 
+    public void Delete(string name)
+    {
+        Names.Remove(name);
+        var p = panels.First(x => x.GetComponent<ConditionCharacterPanel>().Name == name);
+        panels.Remove(p);
+        Destroy(p);
+    }
+
     public void ClearAll()
     {
         foreach (var p in panels)
@@ -49,5 +58,10 @@ public class ConditionPanel : MonoBehaviour
             Destroy(p);
         }
         panels = new List<GameObject>();
+    }
+
+    public void DeleteProperty(string parentName, string name)
+    {
+        panels.Select(x => x.GetComponent<ConditionCharacterPanel>()).First(x => x.Name == parentName).Delete(name);
     }
 }

@@ -50,4 +50,17 @@ public class EffectsPanel : MonoBehaviour
         }
         panels = new List<GameObject>();
     }
+
+    public void Delete(string name)
+    {
+        Names.Remove(name);
+        var p = panels.First(x => x.GetComponent<EffectsCharacterPanel>().Name == name);
+        panels.Remove(p);
+        Destroy(p);
+    }
+
+    public void DeleteProperty(string parentName, string name)
+    {
+        panels.Select(x => x.GetComponent<EffectsCharacterPanel>()).First(x => x.Name == parentName).Delete(name);
+    }
 }

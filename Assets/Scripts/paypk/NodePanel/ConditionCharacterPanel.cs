@@ -99,27 +99,8 @@ public class ConditionCharacterPanel : MonoBehaviour
         OnChangePropertyType("");
     }
 
-    //public void Save()
-    //{
-    //    var propsToAdd = panels.Select(x => x.GetComponent<ConditionPanelCharacterProperty>()).Where(x => (x.Name != "" && x.Value != "" && x.Value != null));
-    //    if (Name != "")
-    //    {
-    //        if (inChange)
-    //        {
-    //            var character = DataManager.instance.Characters.Where(x => x.Name == prevName).First();
-    //            character.Name = Name;
-    //            character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
-    //            inChange = false;
-    //        }
-    //        else
-    //        {
-    //            var character = new Character();
-    //            character.Name = Name;
-    //            character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
-    //            DataManager.instance.Characters.Add(character);
-    //        }
-
-    //    }
-
-    //}
+    public void DeleteMe()
+    {
+        NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().Delete(Name);
+    }
 }

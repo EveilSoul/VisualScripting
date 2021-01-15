@@ -14,7 +14,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
     private string text;
 
     private List<GameObject> panels = new List<GameObject>();
-    private List<string> characterNames = new List<string>();
+    public List<string> characterNames = new List<string>();
 
     public List<string> GetNotSelectedCharacters() => DataManager.instance.Characters.Select(x => x.Name).Except(characterNames).ToList();
     public List<string> GetSelectedCharactersToCondition() => characterNames.Except(NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().Names).ToList();

@@ -194,7 +194,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
 
     public void Delete()
     {
-        DataManager.instance.CharacterAddClass.Delete(Name);
+        NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().DeleteProperty(ParentName, Name);
     }
 
     
