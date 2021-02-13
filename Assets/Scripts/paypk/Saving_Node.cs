@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[System.Serializable]
 public struct PropertyValue
 {
     public string Name;
@@ -9,22 +10,26 @@ public struct PropertyValue
     public string Value;
 }
 
+[System.Serializable]
 public struct NodeCharacter
 {
     public string Name;
     public List<PropertyValue> PropertyValues;
 }
 
+[System.Serializable]
 public struct Condition
 {
     public List<NodeCharacter> NodeCharacters;
 }
 
+[System.Serializable]
 public struct Effect
 {
     public List<NodeCharacter> NodeCharacters;
 }
 
+[System.Serializable]
 public struct Saving_Node
 {
     public int Id;

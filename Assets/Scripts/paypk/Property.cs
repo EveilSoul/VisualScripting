@@ -12,6 +12,7 @@ public class Property
     public List<string> CustomValues;
 }
 
+[System.Serializable]
 public class CharacterProperty
 {
     public string Name;

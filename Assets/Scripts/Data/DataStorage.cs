@@ -74,9 +74,20 @@ public class DataStorage : MonoBehaviour
     public static void Save(string name)
     {
         PrepareNodes(name);
+        PrepareDataManager();
         string jsonData = JsonUtility.ToJson(instance.Data);
         File.WriteAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + instance.Data.DiagramName, jsonData);
     }
+
+    private static void PrepareDataManager()
+    {
+        instance.Data.Characters = DataManager.instance.Characters;
+        instance.Data.NodeData = DataManager.instance.Nodes;
+        instance.Data.Properties = DataManager.instance.Properties
+            .Select(x => new Storage_Property() { Name = x.Key, Type = x.Value.Type, CustomValues = x.Value.CustomValues })
+            .ToList();
+    }
+
 
     private static void PrepareNodes(string name)
     {
@@ -88,10 +99,9 @@ public class DataStorage : MonoBehaviour
 
     public void ClearAll()
     {
-        if (OnSceneClearing != null)
-            OnSceneClearing();
+        OnSceneClearing?.Invoke();
         Data = DiagramInitializer.CreateDefaultDiargam();
-        foreach (var node in FindObjectsOfType<Node>())
+        foreach (var node in GraphController.Nodes.Values)
         {
             if (node.GetComponent<RootNode>() == null)
                 Destroy(node.gameObject);
@@ -106,9 +116,20 @@ public class DataStorage : MonoBehaviour
             instance.Data = ScriptableObject.CreateInstance<NodesData>();
             string jsonStats = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + name);
             JsonUtility.FromJsonOverwrite(jsonStats, instance.Data);
+            GraphController.Nodes = new Dictionary<int, Node>();
             PlaceNodes();
             AddConnections();
+            InitializeDataManager();
         }
+    }
+
+    private static void InitializeDataManager()
+    {
+        DataManager.instance.Characters = instance.Data.Characters;
+        DataManager.instance.Nodes = instance.Data.NodeData;
+
+        DataManager.instance.Properties = new Dictionary<string, Property>();
+        instance.Data.Properties.ForEach(x => DataManager.instance.Properties[x.Name] = new Property() { Type = x.Type, CustomValues = x.CustomValues });
     }
 
     private static void AddConnections()

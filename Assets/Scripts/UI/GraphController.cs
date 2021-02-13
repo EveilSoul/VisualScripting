@@ -7,6 +7,11 @@ using UnityEngine.UI;
 
 public class GraphController : MonoBehaviour
 {
+    public Color NormalColor;
+    public static Color NormalOutlineColor => instance.NormalColor;
+    public Color ErrorColor;
+    public static Color ErrorOutlineColor => instance.ErrorColor;
+
     private static GraphController instance;
 
     public static Vector3 MousePosition => Input.mousePosition - new Vector3(Screen.width, Screen.height) / 2;
@@ -26,18 +31,24 @@ public class GraphController : MonoBehaviour
     private bool canCloseCreationMenu;
     private bool IsPointerOutNode = true;
 
+    public static Dictionary<int, Node> Nodes;
+
     private Outline selectedNode;
+
+    // Start is called before the first frame update
+    void Awake()
+    {
+        instance = this;
+        CreationMenu.SetActive(false);
+        NodeMenu.SetActive(false);
+        DataStorage.OnSceneClearing += OnSceneClearing;
+        Nodes = new Dictionary<int, Node>();
+    }
 
     [ContextMenu("Reset Nodes ID")]
     public void ResetNodesId()
     {
         PlayerPrefs.SetInt("NodeId", 1);
-    }
-
-    public static void AddNodes(NodesData data)
-    {
-        foreach (var node in FindObjectsOfType<Node>())
-            data.Nodes.Add(new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null });
     }
 
     public static void OnNodePointerClick(Node node)
@@ -51,15 +62,14 @@ public class GraphController : MonoBehaviour
             instance.selectedNode = node.GetComponent<Outline>();
         }
         instance.selectedNode.enabled = true;
+        instance.selectedNode.effectColor = instance.NormalColor;
     }
 
-    // Start is called before the first frame update
-    void Awake()
+    public static void AddNodes(NodesData data)
     {
-        instance = this;
-        CreationMenu.SetActive(false);
-        NodeMenu.SetActive(false);
-        DataStorage.OnSceneClearing += OnSceneClearing;
+        //foreach (var node in FindObjectsOfType<Node>())
+        foreach (var node in Nodes.Values)
+            data.Nodes.Add(new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null });
     }
 
     public void OnSceneClearing()
@@ -134,6 +144,7 @@ public class GraphController : MonoBehaviour
         node.Panel = panel;
         InitializePanelId(node);
         CreationMenu.SetActive(false);
+        Nodes[node.Id] = node;
         return nodeObj;
     }
 
@@ -143,7 +154,7 @@ public class GraphController : MonoBehaviour
         var panel = Instantiate(instance.NodePanelPrefab, instance.PanelBackground.transform);
         Node node = nodeObj.GetComponent<Node>();
         node.Panel = panel;
-
+        Nodes[node.Id] = node;
         return nodeObj;
     }
 
@@ -153,6 +164,7 @@ public class GraphController : MonoBehaviour
         Node node = nodeObj.GetComponent<Node>();
         node.Panel = instance.RootPanel;
         InitializePanelId(node);
+        Nodes[node.Id] = node;
         return nodeObj;
     }
 
@@ -168,6 +180,11 @@ public class GraphController : MonoBehaviour
         HideNodeMenu();
     }
 
+    public void StartBuild()
+    {
+        RootNode.StartBuild();
+    }
+
     public void DuplicateSelectedNode()
     {
         var nodeObj = Instantiate(ConnectionManager.Current, Background.transform);
@@ -175,6 +192,7 @@ public class GraphController : MonoBehaviour
         Node node = nodeObj.GetComponent<Node>();
         node.Panel = Instantiate(node.Panel, PanelBackground.transform);
         HideNodeMenu();
+        Nodes[node.Id] = node;
     }
 
     public void SetNodeName(GameObject node)
@@ -185,7 +203,8 @@ public class GraphController : MonoBehaviour
         if (input == "")
             input = "Action";
 
-        FindObjectsOfType<Node>().First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
+        //FindObjectsOfType<Node>().First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
+        Nodes.Values.First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
     }
 
     public void SaveNode(GameObject node)

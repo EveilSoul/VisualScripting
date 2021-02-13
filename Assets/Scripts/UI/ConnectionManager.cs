@@ -17,24 +17,25 @@ public class ConnectionManager : MonoBehaviour
 
     private LineRenderer currentLine;
 
-    private List<ConnectionInfo> AllConnections;
-    private Dictionary<Connection, HashSet<ConnectionInfo>> Connections;
+    public static List<ConnectionInfo> AllConnections;
+    public static Dictionary<Connection, HashSet<ConnectionInfo>> ConnectionDictionary;
     private Vector3 offset;
 
     private void Start()
     {
         instance = this;
-        Connections = new Dictionary<Connection, HashSet<ConnectionInfo>>();
+        ConnectionDictionary = new Dictionary<Connection, HashSet<ConnectionInfo>>();
         AllConnections = new List<ConnectionInfo>();
     }
 
     public static void AddConnectionInfo(NodesData data)
     {
-        foreach(var connection in instance.AllConnections)
+        foreach(var connection in AllConnections)
         {
             int startId = connection.StartPoint.GetComponent<Node>().Id;
             int finishId = connection.FinishPoint.GetComponent<Node>().Id;
             data.Connections.Add(new Storage_Connection() { StartNodeId = startId, FinishNodeId = finishId });
+            //GraphController.Nodes[finishId].OnNodeConnected(startId);
         }
     }
 
@@ -72,10 +73,10 @@ public class ConnectionManager : MonoBehaviour
 
     public static void OnNodeMove(Connection node)
     {
-        if (!instance.Connections.ContainsKey(node))
+        if (!ConnectionDictionary.ContainsKey(node))
             return;
 
-        foreach (var info in instance.Connections[node])
+        foreach (var info in ConnectionDictionary[node])
         {
             if (info.StartPoint == node)
             {
@@ -107,31 +108,31 @@ public class ConnectionManager : MonoBehaviour
 
     public static void RemoveAll()
     {
-        if (instance == null || instance.AllConnections == null)
+        if (instance == null || AllConnections == null)
             return;
 
-        foreach(var connection in instance.AllConnections)
+        foreach(var connection in AllConnections)
         {
             Destroy(connection.ConnectionLine);
         }
-        instance.Connections = new Dictionary<Connection, HashSet<ConnectionInfo>>();
+        ConnectionDictionary = new Dictionary<Connection, HashSet<ConnectionInfo>>();
     }
 
     public static void RemoveAllConnectionsByNode(Connection node)
     {
-        if (!instance.Connections.ContainsKey(node))
+        if (!ConnectionDictionary.ContainsKey(node))
             return;
 
-        foreach (var info in instance.Connections[node])
+        foreach (var info in ConnectionDictionary[node])
         {
             Destroy(info.ConnectionLine);
 
             if (info.StartPoint != node)
-                instance.Connections[info.StartPoint].Remove(info);
-            else instance.Connections[info.FinishPoint].Remove(info);
-            instance.AllConnections.Remove(info);
+                ConnectionDictionary[info.StartPoint].Remove(info);
+            else ConnectionDictionary[info.FinishPoint].Remove(info);
+            AllConnections.Remove(info);
         }
-        instance.Connections.Remove(node);
+        ConnectionDictionary.Remove(node);
     }
 
     public void FinishConnection()
@@ -155,13 +156,13 @@ public class ConnectionManager : MonoBehaviour
         var info = new ConnectionInfo() { StartPoint = startPoint, FinishPoint = finishPoint, ConnectionLine = connection };
         AllConnections.Add(info);
 
-        if (!Connections.ContainsKey(info.StartPoint))
-            Connections[info.StartPoint] = new HashSet<ConnectionInfo>();
-        Connections[info.StartPoint].Add(info);
+        if (!ConnectionDictionary.ContainsKey(info.StartPoint))
+            ConnectionDictionary[info.StartPoint] = new HashSet<ConnectionInfo>();
+        ConnectionDictionary[info.StartPoint].Add(info);
 
-        if (!Connections.ContainsKey(info.FinishPoint))
-            Connections[info.FinishPoint] = new HashSet<ConnectionInfo>();
-        Connections[info.FinishPoint].Add(info);
+        if (!ConnectionDictionary.ContainsKey(info.FinishPoint))
+            ConnectionDictionary[info.FinishPoint] = new HashSet<ConnectionInfo>();
+        ConnectionDictionary[info.FinishPoint].Add(info);
     }
 
     public static void AddConnection(Connection startPoint, Connection finishPoint, LineRenderer connection)

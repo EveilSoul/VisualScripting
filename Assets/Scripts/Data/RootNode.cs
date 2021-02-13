@@ -6,11 +6,10 @@ public class RootNode : Node
 {
     private static RootNode instance;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
+        base.Start();
         if (instance == null)
         {
             instance = this;
@@ -20,6 +19,12 @@ public class RootNode : Node
         else Destroy(gameObject);
 
         Panel.SetActive(false);
+    }
+
+    public static void StartBuild()
+    {
+        instance.WorldState = DataManager.instance.Characters.Clone();
+        instance.RecursiveBuild();
     }
 
     // Update is called once per frame

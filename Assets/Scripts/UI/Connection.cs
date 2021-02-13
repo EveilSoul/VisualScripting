@@ -7,6 +7,12 @@ public class Connection : MonoBehaviour
 {
     public RectTransform Input;
     public RectTransform Output;
+    public Node Node;
+
+    private void Start()
+    {
+        Node = gameObject.GetComponent<Node>();
+    }
 
     public void OnPointerEnter()
     {
