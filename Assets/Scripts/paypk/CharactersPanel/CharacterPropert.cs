@@ -12,12 +12,10 @@ public class CharacterPropert : MonoBehaviour
     {
         Name = name;
         NameText.text = name;
-        Debug.Log(Name);
     }
 
     public void UpdateCharacterInfoPanel()
     {
-        Debug.Log("upp " + Name);
         DataManager.instance.CharacterInfoPanel.SetActive(true);
         DataManager.instance.CharacterInfoPanel.GetComponent<CharacterInfoPanel>().UpdatePanel(Name);
     }

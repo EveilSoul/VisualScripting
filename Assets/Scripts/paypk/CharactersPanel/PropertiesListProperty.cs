@@ -14,6 +14,7 @@ public class PropertiesListProperty : MonoBehaviour
     public void OnDeleteClick()
     {
         DataManager.instance.Properties.Remove(Name.text);
+        DataManager.instance.OnDeletePropertyInvoke(Name.text);
         Destroy(gameObject);
     }
 

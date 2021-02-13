@@ -24,6 +24,8 @@ public class CharactersPanel : MonoBehaviour
             Destroy(p);
         }
 
+        panels = new List<GameObject>();
+
         foreach (var p in DataManager.instance.Characters)
         {
             AddPanel(p.Name);
@@ -32,7 +34,7 @@ public class CharactersPanel : MonoBehaviour
 
     public void Delete(string name)
     {
-        var panelToDel = panels.Where(x => x.GetComponent<CharacterPropert>().Name == name).First();
+        var panelToDel = panels.First(x => x.GetComponent<CharacterPropert>().Name == name);
         Destroy(panelToDel);
         panels.Remove(panelToDel);
         DataManager.instance.Characters.Remove(DataManager.instance.Characters.First(x => x.Name == name));

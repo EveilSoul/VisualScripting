@@ -15,7 +15,6 @@ public class PropertiesListPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log("Start");
         ClearPanels();
 
         foreach (var p in DataManager.instance.Properties)

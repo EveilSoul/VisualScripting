@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PropertyEditValuePanel : MonoBehaviour
 {
     public int Index { get; set; }
+    public string Name { get; set; }
 
     public void OnEndEdit(string value)
     {

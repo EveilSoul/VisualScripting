@@ -18,6 +18,7 @@ public class PropertyEditPanel : MonoBehaviour
     public PropertyType PropertyType { get; set; }
 
     private int currentIndex;
+    private string prevName;
     private List<GameObject> panels = new List<GameObject>();
 
     private void OnEnable()
@@ -29,7 +30,6 @@ public class PropertyEditPanel : MonoBehaviour
     {
         if (PropertyType != PropertyType.Custom)
             return;
-        Debug.Log(currentIndex);
         var panel = Instantiate(Panel, Parent);
         panel.GetComponent<PropertyEditValuePanel>().Index = currentIndex;
         panels.Add(panel);
@@ -40,6 +40,7 @@ public class PropertyEditPanel : MonoBehaviour
     {
         var panel = Instantiate(Panel, Parent);
         panel.GetComponent<PropertyEditValuePanel>().Index = currentIndex;
+        panel.GetComponent<PropertyEditValuePanel>().Name = value;
         panel.GetComponentInChildren<InputField>().text = value;
         panels.Add(panel);
         currentIndex++;
@@ -59,6 +60,7 @@ public class PropertyEditPanel : MonoBehaviour
     {
         Debug.Log("set name");
         PropertyName = name;
+        prevName = name;
         Name.text = name;
         var propType = DataManager.instance.Properties[name].Type;
         Type.value = (int)(propType + 1);
@@ -78,6 +80,16 @@ public class PropertyEditPanel : MonoBehaviour
 
     public void ChangeName(string name)
     {
+        if (name != prevName && DataManager.instance.Properties.Keys.Contains(name))
+        {
+            Type.interactable = false;
+            SaveButton.interactable = false;
+            return;
+        }
+
+        Type.interactable = true;
+        //SaveButton.interactable = false;
+
         if (PropertyName == "")
         {
             DataManager.instance.Properties.Add(name, new Property());
@@ -88,12 +100,11 @@ public class PropertyEditPanel : MonoBehaviour
             ChangeKey(name);
             PropertyName = name;
         }
-        
     }
 
     public void OnNameChanged(string name)
     {
-        if (DataManager.instance.Properties.Keys.Contains(name) || name == "")
+        if (name != prevName && DataManager.instance.Properties.Keys.Contains(name) || name == "")
             SaveButton.interactable = false;
         else
             SaveButton.interactable = true;
@@ -104,6 +115,7 @@ public class PropertyEditPanel : MonoBehaviour
         var value = DataManager.instance.Properties[PropertyName];
         DataManager.instance.Properties.Remove(PropertyName);
         DataManager.instance.Properties.Add(newName, value);
+        DataManager.instance.OnChangePropertyNameInvoke(PropertyName, newName);
     }
 
     public void ChangeType(int index)
@@ -114,29 +126,26 @@ public class PropertyEditPanel : MonoBehaviour
             SaveButton.interactable = false;
             return;
         }
-        SaveButton.interactable = true;
+        if (!DataManager.instance.Properties.Keys.Contains(PropertyName))
+            SaveButton.interactable = true;
 
-        Debug.Log(index);
 
         PropertyType = (PropertyType)(index - 1);
-
-        Debug.Log(PropertyType);
 
         if (PropertyType != PropertyType.Custom)
         {
             ClearPanels();
-            DataManager.instance.Properties[PropertyName].CustomValues = new List<string>();
+            if (DataManager.instance.Properties.Keys.Contains(PropertyName))
+                DataManager.instance.Properties[PropertyName].CustomValues = new List<string>();
         }
             
-
-
         DataManager.instance.Properties[PropertyName].Type = PropertyType;
     }
 
 
     public void Save()
     {
-        
+        //DataManager.instance.Properties.Add(PropertyName, new Property() { Type = PropertyType, CustomValues = panels.Select(x => x.GetComponent<PropertyEditValuePanel>().Name).ToList() });
     }
 
     private void ClearPanels()
@@ -151,18 +160,24 @@ public class PropertyEditPanel : MonoBehaviour
 
     public void OnPropertyEdit(int index, string newValue)
     {
-        if (newValue.Length == 0)
+        if (newValue.Length == 0 && DataManager.instance.Properties[PropertyName].CustomValues.Count > index)
         {
             DataManager.instance.Properties[PropertyName].CustomValues.RemoveAt(index);
+            DataManager.instance.OnDeletePropertyValueInvoke(PropertyName);
             return;
         }
 
         if (DataManager.instance.Properties[PropertyName].CustomValues == null)
             DataManager.instance.Properties[PropertyName].CustomValues = new List<string>();
+
         if (index >= DataManager.instance.Properties[PropertyName].CustomValues.Count)
             DataManager.instance.Properties[PropertyName].CustomValues.Add(newValue);
         else
+        {
+            // Update data
+            DataManager.instance.OnChangePropertyValueInvoke(PropertyName, DataManager.instance.Properties[PropertyName].CustomValues[index], newValue);
             DataManager.instance.Properties[PropertyName].CustomValues[index] = newValue;
+        }
     }
 }
 

@@ -117,7 +117,9 @@ public class CharacterAddPanel : MonoBehaviour
 
     public void Save()
     {
-        var propsToAdd = panels.Select(x => x.GetComponent<CharacterAddProperty>()).Where(x => (x.Name != "" && x.Value != "" && x.Value != null));
+        var propsToAdd = panels.Select(x => x.GetComponent<CharacterAddProperty>())
+            .Select(x => { if (x.Value == null || x.Value == "") x.Value = "NotSelected"; return x; })
+            .Where(x => (x.Name != "")).ToList();
         if (Name != "")
         {
             if (inChange)

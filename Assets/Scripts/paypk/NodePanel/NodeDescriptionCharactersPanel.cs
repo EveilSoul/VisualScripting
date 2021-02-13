@@ -100,6 +100,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         node.Effect = effect;
 
         DataManager.instance.Nodes.Add(node);
+        node.Initial();
 
         ClearAll();
     }

@@ -85,7 +85,8 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 CustomDropdown.gameObject.SetActive(true);
-                var options = properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x)).ToList();
+                var first = new Dropdown.OptionData("NotSelected");
+                var options = new List<Dropdown.OptionData>() { first }.Union(properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 CustomDropdown.options = options;
                 CustomDropdown.value = GetIndex(options.Select(x => x.text).ToList(), Value);
                 break;
@@ -154,7 +155,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 SetAllNoactive();
-                var first = new Dropdown.OptionData("Select Value");
+                var first = new Dropdown.OptionData("NotSelected");
                 CustomDropdown.options = new List<Dropdown.OptionData>() { first }.Union(property.CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 CustomDropdown.value = 0;
                 CustomDropdown.gameObject.SetActive(true);

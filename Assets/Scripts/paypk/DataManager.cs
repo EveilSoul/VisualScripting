@@ -16,9 +16,37 @@ public class DataManager : MonoBehaviour
     public CharacterAddPanel CharacterAddClass;
     public GameObject CharacterInfoPanel;
 
+    #region events
+    public event Action<string> OnDeleteProperty;
+    public void OnDeletePropertyInvoke(string name)
+    {
+        OnDeleteProperty.Invoke(name);
+    }
+
+    public event Action<string, string> OnChangePropertyName;
+    public void OnChangePropertyNameInvoke(string lastName, string newName)
+    {
+        OnChangePropertyName.Invoke(lastName, newName);
+    }
+
+    public event Action<string, string, string> OnChangePropertyValue;
+    public void OnChangePropertyValueInvoke(string propName, string lastName, string newName)
+    {
+        OnChangePropertyValue.Invoke(propName, lastName, newName);
+    }
+
+    public event Action<string> OnDeletePropertyValue;
+    public void OnDeletePropertyValueInvoke(string name)
+    {
+        OnDeletePropertyValue.Invoke(name);
+    }
+    #endregion
+
+
     private void Awake()
     {
         instance = this;
+        CharactersEvents.Initial();
     }
 
 

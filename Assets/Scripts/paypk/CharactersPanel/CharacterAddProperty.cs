@@ -65,7 +65,8 @@ public class CharacterAddProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 Custom.gameObject.SetActive(true);
-                var options = properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x)).ToList();
+                var first = new Dropdown.OptionData("NotSelected");
+                var options = new List<Dropdown.OptionData>() { first }.Union(properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 Custom.options = options;
                 Custom.value = GetIndex(options.Select(x => x.text).ToList(), Value);
                 break;
@@ -97,6 +98,7 @@ public class CharacterAddProperty : MonoBehaviour
         {
             if (options[i] == Name)
             {
+                onSet = true;
                 Dropdown.value = i;
                 break;
             }
@@ -107,7 +109,11 @@ public class CharacterAddProperty : MonoBehaviour
     public void OnTypeChoose(int index)
     {
         if (onSet)
+        {
+            onSet = false;
             return;
+        }
+            
 
         if (index == 0)
         {
@@ -133,7 +139,7 @@ public class CharacterAddProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 SetAllNoactive();
-                var first = new Dropdown.OptionData("Select Value");
+                var first = new Dropdown.OptionData("NotSelected");
                 Custom.options = new List<Dropdown.OptionData>() { first }.Union(property.CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 Custom.value = 0;
                 Custom.gameObject.SetActive(true);
@@ -144,8 +150,6 @@ public class CharacterAddProperty : MonoBehaviour
     public void OnCustomValueChoose(int index)
     {
         Value = Custom.options[index].text;
-        if (index == 0)
-            Value = "";
     }
 
     public void OnIntValueChoose(string value)
