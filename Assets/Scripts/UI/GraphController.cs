@@ -217,7 +217,8 @@ public class GraphController : MonoBehaviour
             input = "Action";
 
         //FindObjectsOfType<Node>().First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
-        Nodes.Values.First(x => x.Id == id).gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
+        Nodes[id].gameObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = input;
+        Nodes[id].Name = input;
     }
 
     public void SaveNode(GameObject node)

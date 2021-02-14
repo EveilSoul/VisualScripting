@@ -166,6 +166,11 @@ public class DataStorage : MonoBehaviour
                 nodeObject.transform.position = info.Position;
                 var node = nodeObject.GetComponent<Node>();
                 node.Id = info.Id;
+                node.Name = info.Name;
+                if (node.Name == "")
+                    node.Name = "Action";
+                nodeObject.GetComponentsInChildren<Text>().First(x => x.name == "Name").text = node.Name;
+                node.Panel.GetComponentsInChildren<InputField>().First(x => x.name == "NameField").text = node.Name;
                 GraphController.InitializePanelId(node);
                 GraphController.Nodes[node.Id] = node;
                 GraphController.NodeData[node.Id] = node.Panel.GetComponent<NodeData>();
