@@ -23,7 +23,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
     private Dictionary<string, Property> Properties;
     private List<string> options;
     private bool onSet = false;
-    private List<string> operations = new List<string>() { "=", "<", ">", "+", "-" };
+    private List<string> operations = new List<string>() { "=", "+", "-" };
 
 
     public void Initial(string name)
@@ -179,15 +179,9 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
                 OperationValue = "=";
                 break;
             case 1:
-                OperationValue = "<";
-                break;
-            case 2:
-                OperationValue = ">";
-                break;
-            case 3:
                 OperationValue = "+";
                 break;
-            case 4:
+            case 2:
                 OperationValue = "-";
                 break;
         }

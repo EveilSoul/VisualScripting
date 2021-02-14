@@ -75,7 +75,28 @@ public class Node : MonoBehaviour, IPointerClickHandler
             foreach (var effectProperty in character.PropertyValues)
             {
                 CharacterProperty worldStateProperty = worldStateCharacter.Properties.First(x => x.Name == effectProperty.Name);
-                worldStateProperty.Value = effectProperty.Value;
+                if(effectProperty.PropertyType == PropertyType.Int)
+                {
+                    var operand = effectProperty.Value[0];
+                    var effectValue = int.Parse(effectProperty.Value.Substring(1, effectProperty.Value.Length - 1));
+                    var worldValue = int.Parse(worldStateProperty.Value);
+
+                    switch (operand)
+                    {
+                        case '=':
+                            worldValue = effectValue;
+                            break;
+                        case '+':
+                            worldValue += effectValue;
+                            break;
+                        case '-':
+                            worldValue -= effectValue;
+                            break;
+                    }
+
+                    worldStateProperty.Value = worldValue.ToString();
+                }
+                else worldStateProperty.Value = effectProperty.Value;
             }
         }
     }
@@ -99,7 +120,41 @@ public class Node : MonoBehaviour, IPointerClickHandler
                 foreach (var conditionProperty in character.PropertyValues)
                 {
                     CharacterProperty worldStateProperty = worldStateCharacter.Properties.First(x => x.Name == conditionProperty.Name);
-                    if (worldStateProperty.Value != conditionProperty.Value)
+                    if (conditionProperty.PropertyType == PropertyType.Int)
+                    {
+                        var operand = conditionProperty.Value[0];
+                        var conditionValue = int.Parse(conditionProperty.Value.Substring(1, conditionProperty.Value.Length - 1));
+                        var worldValue = int.Parse(worldStateProperty.Value);
+
+                        bool isSuccess = true;
+
+                        switch (operand)
+                        {
+                            case '=':
+                                if (worldValue != conditionValue)
+                                    isSuccess = false;
+                                break;
+                            case '>':
+                                if (worldValue <= conditionValue)
+                                    isSuccess = false;
+                                break;
+                            case '<':
+                                if (worldValue >= conditionValue)
+                                    isSuccess = false;
+                                break;
+                        }
+
+                        if (!isSuccess)
+                        {
+                            Debug.LogError($"Condition error at {ToString()}. " +
+                                $"Character: {character.Name}, " +
+                                $"Property {worldStateProperty.Name}. " +
+                                $"Expected: real value {operand} {conditionValue}," +
+                                $"but real value is {worldValue}");
+                            return false;
+                        }
+                    }
+                    else if (worldStateProperty.Value != conditionProperty.Value)
                     {
                         Debug.LogError($"Condition error at {ToString()}. " +
                             $"Character: {character.Name}, " +
