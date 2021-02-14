@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class NodeCharacterData : MonoBehaviour
 {
+    public int ID = -1;
+
     public Text NameText;
 
     public string Name { get; set; }
@@ -17,8 +19,8 @@ public class NodeCharacterData : MonoBehaviour
 
     public void OnClick()
     {
-        NodeData.instance.NodeCharactersPanel.SetActive(false);
-        NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().AddPanel(Name);
-        NodeData.instance.ConditionPanel.SetActive(true);
+        NodeData.instance.GetMyNodeData(ref ID, transform).NodeCharactersPanel.SetActive(false);
+        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().AddPanel(Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.SetActive(true);
     }
 }

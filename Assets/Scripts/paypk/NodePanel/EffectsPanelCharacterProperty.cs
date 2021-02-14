@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class EffectsPanelCharacterProperty : MonoBehaviour
 {
+    public int ID = -1;
+
     public Dropdown Dropdown;
 
     public Dropdown Operation;
@@ -106,7 +108,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
     private List<Dropdown.OptionData> GetDropdownList()
     {
         var first = "Select Type";
-        options = new List<string>() { first }.Union(NodeData.instance.EffectsPanel.GetComponent<EffectsPanel>().GetMyProperties(ParentName, Name)).ToList();
+        options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
 
@@ -138,7 +140,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
         Name = options[index];
         var property = Properties[Name];
         PropertyType = property.Type;
-        NodeData.instance.EffectsPanel.GetComponent<EffectsPanel>().OnChangePropertyType(ParentName, Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OnChangePropertyType(ParentName, Name);
 
 
         switch (PropertyType)

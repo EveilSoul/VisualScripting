@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class EffectsNodeCharacterPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject CharacterPanel;
     public Transform Parent;
 
@@ -13,7 +15,7 @@ public class EffectsNodeCharacterPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToEffects();
+        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToEffects();
 
         if (characters == null)
             return;

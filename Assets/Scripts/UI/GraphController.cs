@@ -32,6 +32,7 @@ public class GraphController : MonoBehaviour
     private bool IsPointerOutNode = true;
 
     public static Dictionary<int, Node> Nodes;
+    public static Dictionary<int, NodeData> NodesData;
 
     private Outline selectedNode;
 
@@ -43,6 +44,7 @@ public class GraphController : MonoBehaviour
         NodeMenu.SetActive(false);
         DataStorage.OnSceneClearing += OnSceneClearing;
         Nodes = new Dictionary<int, Node>();
+        NodesData = new Dictionary<int, NodeData>();
     }
 
     [ContextMenu("Reset Nodes ID")]
@@ -145,6 +147,7 @@ public class GraphController : MonoBehaviour
         InitializePanelId(node);
         CreationMenu.SetActive(false);
         Nodes[node.Id] = node;
+        NodesData[node.Id] = panel.GetComponent<NodeData>();
         return nodeObj;
     }
 
@@ -161,6 +164,7 @@ public class GraphController : MonoBehaviour
     public static GameObject InstantiateRootNode()
     {
         var nodeObj = Instantiate(instance.RootNodePrefab, instance.Background.transform);
+        DataManager.instance.BaseCharactersPanel.GetComponent<CharactersPanel>().UpdatePanels();
         Node node = nodeObj.GetComponent<Node>();
         node.Panel = instance.RootPanel;
         InitializePanelId(node);
@@ -210,7 +214,7 @@ public class GraphController : MonoBehaviour
     public void SaveNode(GameObject node)
     { 
         var id = int.Parse(node.GetComponentsInChildren<Text>().First(x => x.name == "ID").text);
-        instance.NodePanelPrefab.GetComponent<NodeData>().NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
+        NodesData[id].NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
         //FindObjectsOfType<Node>().First(x => x.Id == id).panelMenu.Save(id);
     }
 

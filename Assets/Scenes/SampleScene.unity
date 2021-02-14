@@ -7161,21 +7161,9 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1117959953}
     m_Modifications:
-    - target: {fileID: 3205838791308993291, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -25.133118
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073685571066, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[2].m_Target
-      value: 
-      objectReference: {fileID: 1956558809}
     - target: {fileID: 8772995073755116953, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
       propertyPath: m_Name
       value: Node-Panel
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073755116953, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_IsActive
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8772995073755116954, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
       propertyPath: m_Pivot.x
@@ -7260,30 +7248,6 @@ PrefabInstance:
     - target: {fileID: 8772995073755116954, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 120
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 80
-      objectReference: {fileID: 0}
-    - target: {fileID: 8772995073782518743, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -80
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e94e1ff8b5ef54649a9062de79097d17, type: 3}
@@ -11515,6 +11479,7 @@ MonoBehaviour:
   PropertiesListPanel: {fileID: 316489230}
   CharacterAddClass: {fileID: 1657896698}
   CharacterInfoPanel: {fileID: 1647673455}
+  NodePanelTag: Node-Panel
   Nodes: []
   Characters: []
 --- !u!4 &2000363094

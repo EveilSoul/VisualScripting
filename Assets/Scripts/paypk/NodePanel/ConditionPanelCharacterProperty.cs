@@ -6,6 +6,7 @@ using UnityEngine.UI;
 
 public class ConditionPanelCharacterProperty : MonoBehaviour
 {
+    public int ID = -1;
     public Dropdown Dropdown;
 
     public Dropdown Operation;
@@ -107,7 +108,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
     private List<Dropdown.OptionData> GetDropdownList()
     {
         var first = "Select Type";
-        options = new List<string>() { first }.Union(NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().GetMyProperties(ParentName, Name)).ToList();
+        options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
 
@@ -139,7 +140,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
         Name = options[index];
         var property = Properties[Name];
         PropertyType = property.Type;
-        NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().OnChangePropertyType(ParentName, Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OnChangePropertyType(ParentName, Name);
 
 
         switch (PropertyType)
@@ -195,7 +196,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
 
     public void Delete()
     {
-        NodeData.instance.ConditionPanel.GetComponent<ConditionPanel>().DeleteProperty(ParentName, Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().DeleteProperty(ParentName, Name);
     }
 
     

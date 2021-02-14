@@ -7,6 +7,8 @@ using UnityEngine.UI;
 
 public class ConditionPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject Panel;
     public Transform Parent;
 

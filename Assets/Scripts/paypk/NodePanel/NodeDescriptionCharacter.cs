@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class NodeDescriptionCharacter : MonoBehaviour
 {
+    public int ID = -1;
+
     public Text TextName;
     public string Name { get; set; }
 
@@ -16,6 +18,6 @@ public class NodeDescriptionCharacter : MonoBehaviour
 
     public void Delete()
     {
-        NodeData.instance.NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Delete(Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Delete(Name);
     }
 }

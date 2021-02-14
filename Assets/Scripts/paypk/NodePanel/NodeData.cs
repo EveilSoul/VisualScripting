@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NodeData : MonoBehaviour
 {
@@ -16,5 +17,17 @@ public class NodeData : MonoBehaviour
     private void Awake()
     {
         instance = this;
+    }
+
+    public NodeData GetMyNodeData(ref int ID, Transform transform)
+    {
+            if (ID == -1)
+            {
+                var p = transform.parent;
+                while (p.tag != DataManager.instance.NodePanelTag)
+                    p = p.parent;
+                ID = int.Parse(p.GetChild(0).GetComponent<Text>().text);
+            }
+        return GraphController.NodesData[ID];
     }
 }

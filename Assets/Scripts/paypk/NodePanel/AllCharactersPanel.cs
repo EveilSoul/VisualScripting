@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class AllCharactersPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject CharacterPanel;
     public Transform Parent;
 
@@ -14,7 +16,7 @@ public class AllCharactersPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetNotSelectedCharacters();
+        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetNotSelectedCharacters();
         
         foreach (var p in characters)
         {

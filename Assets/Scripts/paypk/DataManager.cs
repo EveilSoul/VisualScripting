@@ -42,6 +42,8 @@ public class DataManager : MonoBehaviour
     }
     #endregion
 
+    public string NodePanelTag = "Node-Panel";
+
 
     private void Awake()
     {

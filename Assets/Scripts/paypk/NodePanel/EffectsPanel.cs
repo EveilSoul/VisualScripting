@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class EffectsPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject Panel;
     public Transform Parent;
 

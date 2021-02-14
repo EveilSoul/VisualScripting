@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class NodeCharacterPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject CharacterPanel;
     public Transform Parent;
 
@@ -13,7 +15,7 @@ public class NodeCharacterPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToCondition();
+        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToCondition();
 
         if (characters == null)
             return;

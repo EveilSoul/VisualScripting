@@ -6,6 +6,8 @@ using UnityEngine.UI;
 
 public class EffectsCharacterPanel : MonoBehaviour
 {
+    public int ID = -1;
+
     public GameObject Panel;
     public Transform Parent;
     public Button AddPropertyButton;
@@ -102,6 +104,6 @@ public class EffectsCharacterPanel : MonoBehaviour
 
     public void DeleteMe()
     {
-        NodeData.instance.EffectsPanel.GetComponent<EffectsPanel>().Delete(Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Delete(Name);
     }
 }
