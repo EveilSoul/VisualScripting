@@ -32,7 +32,7 @@ public class GraphController : MonoBehaviour
     private bool IsPointerOutNode = true;
 
     public static Dictionary<int, Node> Nodes;
-    public static Dictionary<int, NodeData> NodesData;
+    public static Dictionary<int, NodeData> NodeData;
 
     private Outline selectedNode;
 
@@ -44,7 +44,7 @@ public class GraphController : MonoBehaviour
         NodeMenu.SetActive(false);
         DataStorage.OnSceneClearing += OnSceneClearing;
         Nodes = new Dictionary<int, Node>();
-        NodesData = new Dictionary<int, NodeData>();
+        NodeData = new Dictionary<int, NodeData>();
     }
 
     [ContextMenu("Reset Nodes ID")]
@@ -71,7 +71,10 @@ public class GraphController : MonoBehaviour
     {
         //foreach (var node in FindObjectsOfType<Node>())
         foreach (var node in Nodes.Values)
-            data.Nodes.Add(new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null });
+        {
+            Storage_NodeInfo info = new Storage_NodeInfo() { Id = node.Id, Position = node.transform.position, IsRootNode = node.GetComponent<RootNode>() != null, Name = node.Name };
+            data.Nodes.Add(info);
+        }
     }
 
     public void OnSceneClearing()
@@ -147,7 +150,7 @@ public class GraphController : MonoBehaviour
         InitializePanelId(node);
         CreationMenu.SetActive(false);
         Nodes[node.Id] = node;
-        NodesData[node.Id] = panel.GetComponent<NodeData>();
+        NodeData[node.Id] = panel.GetComponent<NodeData>();
         return nodeObj;
     }
 
@@ -157,7 +160,6 @@ public class GraphController : MonoBehaviour
         var panel = Instantiate(instance.NodePanelPrefab, instance.PanelBackground.transform);
         Node node = nodeObj.GetComponent<Node>();
         node.Panel = panel;
-        Nodes[node.Id] = node;
         return nodeObj;
     }
 
@@ -170,6 +172,12 @@ public class GraphController : MonoBehaviour
         InitializePanelId(node);
         Nodes[node.Id] = node;
         return nodeObj;
+    }
+
+    public void UnconnectNode()
+    {
+        ConnectionManager.RemoveAllConnectionsByNode(ConnectionManager.Current);
+        HideNodeMenu();
     }
 
     public static void InitializePanelId(Node node)
@@ -197,6 +205,7 @@ public class GraphController : MonoBehaviour
         node.Panel = Instantiate(node.Panel, PanelBackground.transform);
         HideNodeMenu();
         Nodes[node.Id] = node;
+        NodeData[node.Id] = node.Panel.GetComponent<NodeData>();
     }
 
     public void SetNodeName(GameObject node)
@@ -214,7 +223,7 @@ public class GraphController : MonoBehaviour
     public void SaveNode(GameObject node)
     { 
         var id = int.Parse(node.GetComponentsInChildren<Text>().First(x => x.name == "ID").text);
-        NodesData[id].NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
+        NodeData[id].NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
         //FindObjectsOfType<Node>().First(x => x.Id == id).panelMenu.Save(id);
     }
 

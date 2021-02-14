@@ -35,6 +35,7 @@ public struct Storage_NodeInfo
     public bool IsRootNode;
     public int Id;
     public Vector3 Position;
+    public string Name;
 }
 
 [System.Serializable]

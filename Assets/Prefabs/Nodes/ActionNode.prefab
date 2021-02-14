@@ -326,6 +326,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Id: 0
   Panel: {fileID: 0}
+  panelMenu: {fileID: 0}
+  Name: 
+  WorldState: []
 --- !u!114 &8144787978407473887
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -354,6 +357,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Input: {fileID: 1915635290187893074}
   Output: {fileID: 1915635290167774294}
+  Node: {fileID: 0}
 --- !u!114 &1915635290810319704
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -435,6 +439,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
+  m_EffectColor: {r: 0.9726602, g: 0.990566, b: 0.62144, a: 1}
   m_EffectDistance: {x: 2, y: -2}
   m_UseGraphicAlpha: 1

@@ -15,6 +15,7 @@ public class RootNode : Node
             instance = this;
             if (Id < 1)
                 Id = GenerateID();
+            Name = "Root node";
         }
         else Destroy(gameObject);
 

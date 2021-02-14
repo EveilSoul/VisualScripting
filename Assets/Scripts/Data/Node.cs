@@ -10,6 +10,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
     public GameObject Panel;
     public NodeDescriptionCharactersPanel panelMenu;
 
+    public string Name;
+
     public List<Character> WorldState;
 
     private Connection nodeConnection;
@@ -21,6 +23,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
 
     public void InitializeID()
     {
+        Name = "Action";
         Id = GenerateID();
     }
 

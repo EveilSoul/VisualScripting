@@ -5,6 +5,9 @@ using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
 {
+    public Color NormalLineColor;
+    public Color SelectedLineColor;
+
     public static ConnectionManager instance;
 
     public static Connection StartPoint;
@@ -18,7 +21,9 @@ public class ConnectionManager : MonoBehaviour
     private LineRenderer currentLine;
 
     public static List<ConnectionInfo> AllConnections;
+
     public static Dictionary<Connection, HashSet<ConnectionInfo>> ConnectionDictionary;
+
     private Vector3 offset;
 
     private void Start()
@@ -53,6 +58,12 @@ public class ConnectionManager : MonoBehaviour
             currentLine = null;
         }
     }
+
+    public static void OnLineSelected(LineRenderer line)
+    {
+        line.startColor = line.endColor = instance.SelectedLineColor;
+    }
+
 
     public void StartConnection()
     {

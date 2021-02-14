@@ -117,7 +117,7 @@ public class DataStorage : MonoBehaviour
             string jsonStats = File.ReadAllText(Application.persistentDataPath + Path.DirectorySeparatorChar + name);
             JsonUtility.FromJsonOverwrite(jsonStats, instance.Data);
             GraphController.Nodes = new Dictionary<int, Node>();
-            GraphController.NodesData = new Dictionary<int, NodeData>();
+            GraphController.NodeData = new Dictionary<int, NodeData>();
             PlaceNodes();
             AddConnections();
             InitializeDataManager();
@@ -167,6 +167,8 @@ public class DataStorage : MonoBehaviour
                 var node = nodeObject.GetComponent<Node>();
                 node.Id = info.Id;
                 GraphController.InitializePanelId(node);
+                GraphController.Nodes[node.Id] = node;
+                GraphController.NodeData[node.Id] = node.Panel.GetComponent<NodeData>();
                 instance.loadedNodes[info.Id] = nodeObject;
             }
         }

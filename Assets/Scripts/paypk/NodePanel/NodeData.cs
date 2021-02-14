@@ -21,13 +21,13 @@ public class NodeData : MonoBehaviour
 
     public NodeData GetMyNodeData(ref int ID, Transform transform)
     {
-            if (ID == -1)
-            {
-                var p = transform.parent;
-                while (p.tag != DataManager.instance.NodePanelTag)
-                    p = p.parent;
-                ID = int.Parse(p.GetChild(0).GetComponent<Text>().text);
-            }
-        return GraphController.NodesData[ID];
+        if (ID == -1)
+        {
+            var p = transform.parent;
+            while (p.tag != DataManager.instance.NodePanelTag)
+                p = p.parent;
+            ID = int.Parse(p.GetChild(0).GetComponent<Text>().text);
+        }
+        return GraphController.NodeData[ID];
     }
 }
