@@ -14,7 +14,7 @@ public class CharacterInfoPanel : MonoBehaviour
     {
         var character = DataManager.instance.Characters.Where(x => x.Name == name).First();
         SetName(character.Name);
-        SetProperties(character.Properties);
+        SetPropertiesText(character.Properties);
     }
 
     public void SetName(string name)
@@ -22,7 +22,7 @@ public class CharacterInfoPanel : MonoBehaviour
         Name.text = name;
     }
 
-    public void SetProperties(List<CharacterProperty> properties)
+    public void SetPropertiesText(List<CharacterProperty> properties)
     {
         if (properties == null)
         {

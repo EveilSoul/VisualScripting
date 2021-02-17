@@ -56,7 +56,7 @@ public static class CharactersEvents
             for (int i = 0; i < e.Properties.Count; i++)
             {
                 if (e.Properties[i].Name == propName)
-                    e.Properties[i].Value = "NotSelected";
+                    e.Properties[i].Value = DataManager.NotSelectedValue;
             }
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class CharacterPropert : MonoBehaviour
+public class CharactersProperty: MonoBehaviour
 {
     public Text NameText; 
     public string Name { get; set; }

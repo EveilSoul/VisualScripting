@@ -2252,8 +2252,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1657896698}
-        m_TargetAssemblyTypeName: Class5, Assembly-CSharp
-        m_MethodName: OnChooseName
+        m_TargetAssemblyTypeName: CharacterAddPanel, Assembly-CSharp
+        m_MethodName: OnChangeName
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -11692,7 +11692,6 @@ MonoBehaviour:
   PropertiesListPanel: {fileID: 316489230}
   CharacterAddClass: {fileID: 1657896698}
   CharacterInfoPanel: {fileID: 1647673455}
-  NodePanelTag: Node-Panel
   Nodes: []
   Characters: []
 --- !u!4 &2000363094
@@ -12648,8 +12647,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1657896698}
-        m_TargetAssemblyTypeName: Class5, Assembly-CSharp
-        m_MethodName: OnAddClick
+        m_TargetAssemblyTypeName: CharacterAddPanel, Assembly-CSharp
+        m_MethodName: CreateNewPanel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

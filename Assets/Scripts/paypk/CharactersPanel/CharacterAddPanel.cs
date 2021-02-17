@@ -16,7 +16,7 @@ public class CharacterAddPanel : MonoBehaviour
 
     public string Name { get; set; }
 
-    private bool inChange = false;
+    private bool isOpenedExist = false;
     private string prevName;
     private List<string> propertiesName;
     private List<GameObject> panels;
@@ -30,7 +30,7 @@ public class CharacterAddPanel : MonoBehaviour
         NameField.text = "";
         ClearPanels();
         AddPropertyButton.interactable = true;
-        inChange = false;
+        isOpenedExist = false;
     }
 
     public void ClearPanels()
@@ -44,37 +44,40 @@ public class CharacterAddPanel : MonoBehaviour
 
     public void OpenExistCharacter(string name)
     {
-        inChange = true;
+        isOpenedExist = true;
         prevName = name;
 
         var character = DataManager.instance.Characters.First(x => x.Name == name);
         NameField.text = character.Name;
         Name = character.Name;
         if (character.Properties != null)
+        {
             foreach (var p in character.Properties)
             {
-                OnAddClick();
+                CreateNewPanel();
             }
+        }
 
-
+        // Для того, чтобы корректно отображались возможные типы свойсв необходимо сначала проинициализировать имена 
+        // т.к. список доступных свойств рассчитывается из списка всех имен и текущего
         for (int i = 0; i < panels.Count; i++)
         {
             var charAdd = panels[i].GetComponent<CharacterAddProperty>();
             var property = character.Properties[i];
-            charAdd.SetPropertyName(property.Name);
+            charAdd.SetName(property.Name);
         }
 
         for (int i = 0; i < panels.Count; i++)
         {
             var charAdd = panels[i].GetComponent<CharacterAddProperty>();
             var property = character.Properties[i];
-            charAdd.SetPropertyValue(property.Type, property.Value);
+            charAdd.SetPropertyValues(property.Type, property.Value);
         }
 
         SaveButton.interactable = true;
     }
 
-    public void OnChooseName(string name)
+    public void OnChangeName(string name)
     {
         if (name == "")
             SaveButton.interactable = false;
@@ -98,7 +101,7 @@ public class CharacterAddPanel : MonoBehaviour
         return propertiesName.Except(panels.Select(x => x.GetComponent<CharacterAddProperty>()).Select(x => x.Name).Where(x => x != name)).ToList();
     }
 
-    public void OnAddClick()
+    public void CreateNewPanel()
     {
         var panel = Instantiate(Panel, Parent);
         panels.Add(panel);
@@ -118,16 +121,18 @@ public class CharacterAddPanel : MonoBehaviour
     public void Save()
     {
         var propsToAdd = panels.Select(x => x.GetComponent<CharacterAddProperty>())
-            .Select(x => { if (x.Value == null || x.Value == "") x.Value = "NotSelected"; return x; })
+            // Заменяем все неинициализированные значения на "Не выбрано"
+            .Select(x => { if (x.Value == null || x.Value == "") x.Value = DataManager.NotSelectedValue; return x; })
             .Where(x => (x.Name != "")).ToList();
         if (Name != "")
         {
-            if (inChange)
+            // Если открыт уже существующий, меняем его значения. Иначе создаем нового.
+            if (isOpenedExist)
             {
                 var character = DataManager.instance.Characters.Where(x => x.Name == prevName).First();
                 character.Name = Name;
                 character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
-                inChange = false;
+                isOpenedExist = false;
             }
             else
             {
@@ -136,12 +141,8 @@ public class CharacterAddPanel : MonoBehaviour
                 character.Properties = propsToAdd.Select(x => new CharacterProperty() { Name = x.Name, Type = x.PropertyType, Value = x.Value }).ToList();
                 DataManager.instance.Characters.Add(character);
             }
-
         }
-
     }
-
-
 }
 
 

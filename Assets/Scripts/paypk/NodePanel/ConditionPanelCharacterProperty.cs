@@ -86,7 +86,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 CustomDropdown.gameObject.SetActive(true);
-                var first = new Dropdown.OptionData("NotSelected");
+                var first = new Dropdown.OptionData(DataManager.NotSelectedValue);
                 var options = new List<Dropdown.OptionData>() { first }.Union(properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 CustomDropdown.options = options;
                 CustomDropdown.value = GetIndex(options.Select(x => x.text).ToList(), Value);
@@ -107,7 +107,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
 
     private List<Dropdown.OptionData> GetDropdownList()
     {
-        var first = "Select Type";
+        var first = DataManager.SelectTypeValue;
         options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
@@ -156,7 +156,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 SetAllNoactive();
-                var first = new Dropdown.OptionData("NotSelected");
+                var first = new Dropdown.OptionData(DataManager.NotSelectedValue);
                 CustomDropdown.options = new List<Dropdown.OptionData>() { first }.Union(property.CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 CustomDropdown.value = 0;
                 CustomDropdown.gameObject.SetActive(true);

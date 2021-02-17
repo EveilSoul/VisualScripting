@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NodeCharacterPanel : MonoBehaviour
+public class ConditionNodeCharacterPanel : MonoBehaviour
 {
     public int ID = -1;
 
@@ -24,7 +24,7 @@ public class NodeCharacterPanel : MonoBehaviour
         {
             var panel = Instantiate(CharacterPanel, Parent);
             panels.Add(panel);
-            panel.GetComponent<NodeCharacterData>().SetName(p);
+            panel.GetComponent<ConditionNodeCharacterData>().SetName(p);
         }
     }
 

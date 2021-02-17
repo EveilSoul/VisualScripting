@@ -24,7 +24,7 @@ public class NodeData : MonoBehaviour
         if (ID == -1)
         {
             var p = transform.parent;
-            while (p.tag != DataManager.instance.NodePanelTag)
+            while (p.tag != DataManager.NodePanelTag)
                 p = p.parent;
             ID = int.Parse(p.GetChild(0).GetComponent<Text>().text);
         }

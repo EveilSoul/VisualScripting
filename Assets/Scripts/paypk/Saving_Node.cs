@@ -54,19 +54,13 @@ public struct Saving_Node
 
     public void ChangePropertyName(string lastName, string newName)
     {
-        foreach(var e in Condition.NodeCharacters)
-        {
-            for (var i=0;i< e.PropertyValues.Count;i++)
-            {
-                if (e.PropertyValues[i].Name == lastName)
-                {
-                    var newProp = e.PropertyValues[i];
-                    newProp.Name = newName;
-                    e.PropertyValues[i] = newProp;
-                }
-            }
-        }
-        foreach (var e in Effect.NodeCharacters)
+        ChangePropertyName(lastName, newName, Condition.NodeCharacters);
+        ChangePropertyName(lastName, newName, Effect.NodeCharacters);
+    }
+
+    private void ChangePropertyName(string lastName, string newName, List<NodeCharacter> nodeCharacters)
+    {
+        foreach (var e in nodeCharacters)
         {
             for (var i = 0; i < e.PropertyValues.Count; i++)
             {
@@ -82,22 +76,13 @@ public struct Saving_Node
 
     public void ChangePropertyValueName(string propName, string lastName, string newName)
     {
-        foreach (var e in Condition.NodeCharacters)
-        {
-            for (var i = 0; i < e.PropertyValues.Count; i++)
-            {
-                if (e.PropertyValues[i].Name == propName)
-                {
-                    if (e.PropertyValues[i].Value == lastName)
-                    {
-                        var newProp = e.PropertyValues[i];
-                        newProp.Value = newName;
-                        e.PropertyValues[i] = newProp;
-                    }
-                }
-            }
-        }
-        foreach (var e in Effect.NodeCharacters)
+        ChangePropertyValueName(propName, lastName, newName, Condition.NodeCharacters);
+        ChangePropertyValueName(propName, lastName, newName, Effect.NodeCharacters);
+    }
+
+    private void ChangePropertyValueName(string propName, string lastName, string newName, List<NodeCharacter> nodeCharacters)
+    {
+        foreach (var e in nodeCharacters)
         {
             for (var i = 0; i < e.PropertyValues.Count; i++)
             {
@@ -116,26 +101,20 @@ public struct Saving_Node
 
     public void DeletePropertyValue(string propName)
     {
-        foreach (var e in Condition.NodeCharacters)
+        DeletePropertyValue(propName, Condition.NodeCharacters);
+        DeletePropertyValue(propName, Effect.NodeCharacters);
+    }
+
+    private void DeletePropertyValue(string propName, List<NodeCharacter> nodeCharacters)
+    {
+        foreach (var e in nodeCharacters)
         {
             for (var i = 0; i < e.PropertyValues.Count; i++)
             {
                 if (e.PropertyValues[i].Name == propName)
                 {
                     var newProp = e.PropertyValues[i];
-                    newProp.Value = "NotSelected";
-                    e.PropertyValues[i] = newProp;
-                }
-            }
-        }
-        foreach (var e in Effect.NodeCharacters)
-        {
-            for (var i = 0; i < e.PropertyValues.Count; i++)
-            {
-                if (e.PropertyValues[i].Name == propName)
-                {
-                    var newProp = e.PropertyValues[i];
-                    newProp.Value = "NotSelected";
+                    newProp.Value = DataManager.NotSelectedValue;
                     e.PropertyValues[i] = newProp;
                 }
             }

@@ -107,7 +107,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
 
     private List<Dropdown.OptionData> GetDropdownList()
     {
-        var first = "Select Type";
+        var first = DataManager.SelectTypeValue;
         options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }

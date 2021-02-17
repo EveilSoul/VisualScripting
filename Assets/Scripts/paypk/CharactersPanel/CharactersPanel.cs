@@ -14,7 +14,7 @@ public class CharactersPanel : MonoBehaviour
     {
         var panel = Instantiate(Panel, gameObject.transform);
         panels.Add(panel);
-        panel.GetComponent<CharacterPropert>().SetName(name);
+        panel.GetComponent<CharactersProperty>().SetName(name);
     }
 
     public void UpdatePanels()
@@ -34,7 +34,7 @@ public class CharactersPanel : MonoBehaviour
 
     public void Delete(string name)
     {
-        var panelToDel = panels.First(x => x.GetComponent<CharacterPropert>().Name == name);
+        var panelToDel = panels.First(x => x.GetComponent<CharactersProperty>().Name == name);
         Destroy(panelToDel);
         panels.Remove(panelToDel);
         DataManager.instance.Characters.Remove(DataManager.instance.Characters.First(x => x.Name == name));

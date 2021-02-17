@@ -10,11 +10,13 @@ public class DataManager : MonoBehaviour
 {
     public static DataManager instance;
 
+    #region Panels
     public GameObject BaseCharactersPanel;
     public GameObject PropertyEditPanel;
     public GameObject PropertiesListPanel;
     public CharacterAddPanel CharacterAddClass;
     public GameObject CharacterInfoPanel;
+    #endregion
 
     #region events
     public event Action<string> OnDeleteProperty;
@@ -42,7 +44,9 @@ public class DataManager : MonoBehaviour
     }
     #endregion
 
-    public string NodePanelTag = "Node-Panel";
+    public static string NodePanelTag = "Node-Panel";
+    public static string NotSelectedValue = "Not Selected";
+    public static string SelectTypeValue = "Select Type";
 
 
     private void Awake()
@@ -55,16 +59,6 @@ public class DataManager : MonoBehaviour
     public List<Saving_Node> Nodes = new List<Saving_Node>();
 
     public List<Character> Characters = new List<Character>();
-    //{
-    //    new Character(){ Name = "first"} ,
-    //    new Character(){ Name = "Sec"}
-    //};
     public Dictionary<string, Property> Properties = new Dictionary<string, Property>();
-    //{
-    //    { "one", new Property { Type = PropertyType.Custom, CustomValues = new List<string>() {"rr", "rrr" } } },
-    //    { "two", new Property { Type = PropertyType.Custom, CustomValues = new List<string>() {"tt", "rtttrr" } } },
-    //    { "rrrtttt", new Property { Type = PropertyType.Int } },
-    //    { "rtvvv", new Property { Type = PropertyType.Bool } }
-    //};
 }
 

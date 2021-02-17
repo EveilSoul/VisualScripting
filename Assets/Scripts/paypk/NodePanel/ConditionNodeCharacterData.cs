@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class NodeCharacterData : MonoBehaviour
+public class ConditionNodeCharacterData : MonoBehaviour
 {
     public int ID = -1;
 

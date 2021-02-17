@@ -36,12 +36,12 @@ public class PropertyEditPanel : MonoBehaviour
         currentIndex++;
     }
 
-    public void AddPanel(string value)
+    public void AddPanel(string name)
     {
         var panel = Instantiate(Panel, Parent);
         panel.GetComponent<PropertyEditValuePanel>().Index = currentIndex;
-        panel.GetComponent<PropertyEditValuePanel>().Name = value;
-        panel.GetComponentInChildren<InputField>().text = value;
+        panel.GetComponent<PropertyEditValuePanel>().Name = name;
+        panel.GetComponentInChildren<InputField>().text = name;
         panels.Add(panel);
         currentIndex++;
     }
@@ -53,12 +53,10 @@ public class PropertyEditPanel : MonoBehaviour
         PropertyName = "";
         Type.value = 0;
         currentIndex = DataManager.instance.Properties.Count;
-        Debug.Log(currentIndex);
     }
 
     public void SetName(string name)
     {
-        Debug.Log("set name");
         PropertyName = name;
         prevName = name;
         Name.text = name;
@@ -88,7 +86,6 @@ public class PropertyEditPanel : MonoBehaviour
         }
 
         Type.interactable = true;
-        //SaveButton.interactable = false;
 
         if (PropertyName == "")
         {
@@ -140,12 +137,6 @@ public class PropertyEditPanel : MonoBehaviour
         }
             
         DataManager.instance.Properties[PropertyName].Type = PropertyType;
-    }
-
-
-    public void Save()
-    {
-        //DataManager.instance.Properties.Add(PropertyName, new Property() { Type = PropertyType, CustomValues = panels.Select(x => x.GetComponent<PropertyEditValuePanel>().Name).ToList() });
     }
 
     private void ClearPanels()

@@ -17,9 +17,10 @@ public class CharacterAddProperty : MonoBehaviour
     public string Name { get; set; }
     public PropertyType PropertyType { get; set; }
     public string Value { get; set; }
+
     private Dictionary<string, Property> Properties;
     private List<string> options;
-    private bool onSet = false;
+    private bool noNeedChange = false;
 
 
     private void OnEnable()
@@ -30,14 +31,14 @@ public class CharacterAddProperty : MonoBehaviour
         Dropdown.options = GetDropdownList();
     }
 
-    public void SetPropertyName(string name)
+    public void SetName(string name)
     {
         Name = name;
     }
 
-    public void SetPropertyValue(PropertyType propertyType, string value)
+    public void SetPropertyValues(PropertyType propertyType, string value)
     {
-        onSet = true;
+        noNeedChange = true;
         PropertyType = propertyType;
         Value = value;
         Dropdown.options = GetDropdownList();
@@ -48,7 +49,6 @@ public class CharacterAddProperty : MonoBehaviour
                 Dropdown.value = i;
                 break;
             }
-                
         }
 
         var properties = DataManager.instance.Properties;
@@ -65,7 +65,7 @@ public class CharacterAddProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 Custom.gameObject.SetActive(true);
-                var first = new Dropdown.OptionData("NotSelected");
+                var first = new Dropdown.OptionData(DataManager.NotSelectedValue);
                 var options = new List<Dropdown.OptionData>() { first }.Union(properties[Name].CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 Custom.options = options;
                 Custom.value = GetIndex(options.Select(x => x.text).ToList(), Value);
@@ -86,11 +86,12 @@ public class CharacterAddProperty : MonoBehaviour
 
     private List<Dropdown.OptionData> GetDropdownList()
     {
-        var first = "Select Type";
+        var first = DataManager.SelectTypeValue;
         options = new List<string>() { first }.Union(DataManager.instance.CharacterAddClass.GetMyProperties(Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
 
+    // Для обновления списка возможных значений на других свойсвах
     public void OnChooseNewProperty()
     {
         Dropdown.options = GetDropdownList();
@@ -98,7 +99,7 @@ public class CharacterAddProperty : MonoBehaviour
         {
             if (options[i] == Name)
             {
-                onSet = true;
+                noNeedChange = true;
                 Dropdown.value = i;
                 break;
             }
@@ -108,12 +109,11 @@ public class CharacterAddProperty : MonoBehaviour
 
     public void OnTypeChoose(int index)
     {
-        if (onSet)
+        if (noNeedChange)
         {
-            onSet = false;
+            noNeedChange = false;
             return;
-        }
-            
+        }  
 
         if (index == 0)
         {
@@ -125,7 +125,6 @@ public class CharacterAddProperty : MonoBehaviour
         var property = Properties[Name];
         PropertyType = property.Type;
         DataManager.instance.CharacterAddClass.OnChangePropertyType(Name);
-
 
         switch (PropertyType)
         {
@@ -139,7 +138,7 @@ public class CharacterAddProperty : MonoBehaviour
                 break;
             case PropertyType.Custom:
                 SetAllNoactive();
-                var first = new Dropdown.OptionData("NotSelected");
+                var first = new Dropdown.OptionData(DataManager.NotSelectedValue);
                 Custom.options = new List<Dropdown.OptionData>() { first }.Union(property.CustomValues.Select(x => new Dropdown.OptionData(x))).ToList();
                 Custom.value = 0;
                 Custom.gameObject.SetActive(true);
