@@ -16,7 +16,7 @@ public class ConditionPanel : MonoBehaviour
     public Button SaveButton;
 
     public List<GameObject> panels = new List<GameObject>();
-    public List<string> Names = new List<string>();
+    public HashSet<string> Names = new HashSet<string>();
 
     public void AddPanel(string name)
     {
@@ -48,9 +48,12 @@ public class ConditionPanel : MonoBehaviour
     public void Delete(string name)
     {
         Names.Remove(name);
-        var p = panels.First(x => x.GetComponent<ConditionCharacterPanel>().Name == name);
-        panels.Remove(p);
-        Destroy(p);
+        var p = panels.Where(x => x.GetComponent<ConditionCharacterPanel>().Name == name).ToList();
+        foreach(var e in p)
+        {
+            panels.Remove(e);
+            Destroy(e);
+        }
     }
 
     public void ClearAll()

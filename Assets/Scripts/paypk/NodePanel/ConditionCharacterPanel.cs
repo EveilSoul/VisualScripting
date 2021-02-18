@@ -104,5 +104,6 @@ public class ConditionCharacterPanel : MonoBehaviour
     public void DeleteMe()
     {
         NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().Delete(Name);
+        Debug.Log("Delllletttteeee");
     }
 }

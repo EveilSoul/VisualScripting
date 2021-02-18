@@ -16,9 +16,11 @@ public class PropertyEditPanel : MonoBehaviour
 
     public string PropertyName { get; set; }
     public PropertyType PropertyType { get; set; }
+    public List<string> PropertyValues { get; set; }
 
     private int currentIndex;
     private string prevName;
+    private bool isExist = false;
     private List<GameObject> panels = new List<GameObject>();
 
     private void OnEnable()
@@ -57,6 +59,7 @@ public class PropertyEditPanel : MonoBehaviour
 
     public void SetName(string name)
     {
+        isExist = true;
         PropertyName = name;
         prevName = name;
         Name.text = name;
@@ -89,7 +92,8 @@ public class PropertyEditPanel : MonoBehaviour
 
         if (PropertyName == "")
         {
-            DataManager.instance.Properties.Add(name, new Property());
+            //DataManager.instance.Properties.Add(name, new Property());
+            PropertyValues = new List<string>();
             PropertyName = name;
         }
         else
@@ -129,17 +133,16 @@ public class PropertyEditPanel : MonoBehaviour
 
         PropertyType = (PropertyType)(index - 1);
 
-        if (PropertyType != PropertyType.Custom)
+        if (PropertyType != PropertyType.Custom && isExist)
         {
             ClearPanels();
             if (DataManager.instance.Properties.Keys.Contains(PropertyName))
                 DataManager.instance.Properties[PropertyName].CustomValues = new List<string>();
         }
-            
-        DataManager.instance.Properties[PropertyName].Type = PropertyType;
+           
     }
 
-    private void ClearPanels()
+    public void ClearPanels()
     {
         foreach (var p in panels)
         {
@@ -151,6 +154,16 @@ public class PropertyEditPanel : MonoBehaviour
 
     public void OnPropertyEdit(int index, string newValue)
     {
+        if (!isExist)
+        {
+            if (index >= PropertyValues.Count)
+                PropertyValues.Add(newValue);
+            else
+                PropertyValues[index] = newValue;
+
+            return;
+        }
+
         if (newValue.Length == 0 && DataManager.instance.Properties[PropertyName].CustomValues.Count > index)
         {
             DataManager.instance.Properties[PropertyName].CustomValues.RemoveAt(index);
@@ -169,6 +182,24 @@ public class PropertyEditPanel : MonoBehaviour
             DataManager.instance.OnChangePropertyValueInvoke(PropertyName, DataManager.instance.Properties[PropertyName].CustomValues[index], newValue);
             DataManager.instance.Properties[PropertyName].CustomValues[index] = newValue;
         }
+    }
+
+    public void Save()
+    {
+        if (DataManager.instance.Properties.Keys.Contains(PropertyName))
+        {
+            DataManager.instance.Properties[PropertyName].Type = PropertyType;
+            DataManager.instance.Properties[PropertyName].CustomValues = PropertyValues;
+        }
+        else
+        {
+            DataManager.instance.Properties.Add(PropertyName, new Property()
+            {
+                Type = PropertyType,
+                CustomValues = PropertyValues
+            });
+        }
+        isExist = false;
     }
 }
 

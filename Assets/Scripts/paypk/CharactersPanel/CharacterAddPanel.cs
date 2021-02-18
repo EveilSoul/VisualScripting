@@ -79,11 +79,13 @@ public class CharacterAddPanel : MonoBehaviour
 
     public void OnChangeName(string name)
     {
-        if (name == "")
+        if (name == "" || DataManager.instance.Characters.Select(x => x.Name).Contains(name))
             SaveButton.interactable = false;
-        else if (!DataManager.instance.Characters.Select(x => x.Name).Contains(name))
+        else
+        {
             SaveButton.interactable = true;
-        Name = name;
+            Name = name;
+        } 
     }
 
     public void OnChangePropertyType(string Name)
