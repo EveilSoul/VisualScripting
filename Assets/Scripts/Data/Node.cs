@@ -117,6 +117,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
         var condition = nodeData.Condition;
         if (WorldState != null)
         {
+            
+
             foreach (var character in condition.NodeCharacters)
             {
                 var worldStateCharacter = WorldState.First(x => x.Name == character.Name);

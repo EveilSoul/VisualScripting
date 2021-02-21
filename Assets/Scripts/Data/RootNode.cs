@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class RootNode : Node
 {
@@ -39,5 +40,14 @@ public class RootNode : Node
         if (instance != null)
             Destroy(instance.gameObject);
         instance = null;
+    }
+
+    public override void OnPointerClick(PointerEventData eventData)
+    {
+        base.OnPointerClick(eventData);
+        if (eventData.clickCount == 2)
+        {
+            DataManager.instance.BaseCharactersPanel.GetComponent<CharactersPanel>().UpdatePanels();
+        }
     }
 }

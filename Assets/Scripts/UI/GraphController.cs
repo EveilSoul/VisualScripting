@@ -188,6 +188,7 @@ public class GraphController : MonoBehaviour
     public void RemoveSelectedNode()
     {
         ConnectionManager.RemoveAllConnectionsByNode(ConnectionManager.Current);
+        Nodes.Remove(ConnectionManager.Current.GetComponent<Node>().Id);
         Destroy(ConnectionManager.Current.gameObject);
         HideNodeMenu();
     }

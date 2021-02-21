@@ -76,7 +76,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
                 var charProp = pp.GetComponent<ConditionPanelCharacterProperty>();
                 propValue.Name = charProp.Name;
                 propValue.PropertyType = charProp.PropertyType;
-                propValue.Value = (charProp.OperationValue == null)? "=" + charProp.Value: charProp.OperationValue + charProp.Value;
+                propValue.Value = (charProp.PropertyType == PropertyType.Int && charProp.OperationValue == null)? "=" + charProp.Value: charProp.OperationValue + charProp.Value;
                 nodeCharacter.PropertyValues.Add(propValue);
             }
             condition.NodeCharacters.Add(nodeCharacter);
@@ -94,7 +94,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
                 var charProp = pp.GetComponent<EffectsPanelCharacterProperty>();
                 propValue.Name = charProp.Name;
                 propValue.PropertyType = charProp.PropertyType;
-                propValue.Value = (charProp.OperationValue == null) ? "=" + charProp.Value : charProp.OperationValue + charProp.Value;
+                propValue.Value = (charProp.PropertyType == PropertyType.Int && charProp.OperationValue == null) ? "=" + charProp.Value : charProp.OperationValue + charProp.Value;
                 nodeCharacter.PropertyValues.Add(propValue);
             }
             effect.NodeCharacters.Add(nodeCharacter);
