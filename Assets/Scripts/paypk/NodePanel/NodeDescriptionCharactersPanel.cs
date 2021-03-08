@@ -46,7 +46,6 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
     {
         this.text = text;
         TextField.text = text;
-        Debug.Log(text);
     }
 
     public void Save(int id)
@@ -59,6 +58,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         condition.NodeCharacters = new List<NodeCharacter>();
         var effect = new Effect();
         effect.NodeCharacters = new List<NodeCharacter>();
+        var quest = new Quest();
 
         node.Id = id;
         node.CharacterNames = characterNames;
@@ -100,8 +100,16 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
             effect.NodeCharacters.Add(nodeCharacter);
         }
 
+        var chooseQuestPanel = NodeData.instance.GetMyNodeData(ref ID, transform).ChooseQuestPanel;
+        quest = new Quest()
+        {
+            Name = chooseQuestPanel.QuestNameDropdown.options[chooseQuestPanel.QuestNameDropdown.value].text,
+            Type = (QuestType)(chooseQuestPanel.QuestTypeDropdown.value)
+        };
+
         node.Condition = condition;
         node.Effect = effect;
+        node.Quest = quest;
 
         DataManager.instance.Nodes.Add(node);
         node.Initial();

@@ -30,6 +30,13 @@ public struct Effect
 }
 
 [System.Serializable]
+public struct Quest
+{
+    public string Name;
+    public QuestType Type;
+}
+
+[System.Serializable]
 public struct Saving_Node
 {
     public int Id;
@@ -37,6 +44,7 @@ public struct Saving_Node
     public Condition Condition;
     public string Text;
     public Effect Effect;
+    public Quest Quest;
 
     public void Initial()
     {

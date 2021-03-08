@@ -45,6 +45,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
         }
 
         GraphController.OnNodePointerClick(this);
+        GraphController.InitializePanelId(this);
     }
 
     public void RecursiveBuild()

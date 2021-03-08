@@ -57,8 +57,9 @@ public class DataManager : MonoBehaviour
 
 
     public List<Saving_Node> Nodes = new List<Saving_Node>();
-
     public List<Character> Characters = new List<Character>();
     public Dictionary<string, Property> Properties = new Dictionary<string, Property>();
+    public List<Branch> Branches = new List<Branch>();
+    public List<string> Quests = new List<string>();
 }
 

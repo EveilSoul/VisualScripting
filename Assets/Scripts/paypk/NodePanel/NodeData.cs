@@ -13,6 +13,7 @@ public class NodeData : MonoBehaviour
     public GameObject NodeCharactersPanel;
     public GameObject EffectsPanel;
     public GameObject EffectsNodeCharactersPanel;
+    public ChoseQuestPanel ChooseQuestPanel;
 
     private void Awake()
     {
