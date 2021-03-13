@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
+using System.Linq;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class ConnectionManager : MonoBehaviour
 {
     public Color NormalLineColor;
-    public Color SelectedLineColor;
+    public Color CPLineColor;
 
     public static ConnectionManager instance;
 
@@ -35,7 +36,7 @@ public class ConnectionManager : MonoBehaviour
 
     public static void AddConnectionInfo(NodesData data)
     {
-        foreach(var connection in AllConnections)
+        foreach (var connection in AllConnections)
         {
             int startId = connection.StartPoint.GetComponent<Node>().Id;
             int finishId = connection.FinishPoint.GetComponent<Node>().Id;
@@ -49,7 +50,7 @@ public class ConnectionManager : MonoBehaviour
         if (currentLine != null)
             currentLine.SetPosition(1, GraphController.MousePosition - offset);
 
-        if (Input.GetMouseButton(0) && currentLine != null)
+        if (Input.GetMouseButton(0) && currentLine != null && (GraphController.IsPointerOutMenu || !GraphController.IsPointerOutNode))
             FinishConnection();
 
         if (Input.GetKeyDown(KeyCode.Escape) && currentLine != null)
@@ -57,11 +58,6 @@ public class ConnectionManager : MonoBehaviour
             Destroy(currentLine);
             currentLine = null;
         }
-    }
-
-    public static void OnLineSelected(LineRenderer line)
-    {
-        line.startColor = line.endColor = instance.SelectedLineColor;
     }
 
 
@@ -78,8 +74,14 @@ public class ConnectionManager : MonoBehaviour
     public static LineRenderer CreateConnectionLine()
     {
         var line = Instantiate(instance.ConnectionLinePrefab, instance.Background.transform).GetComponent<LineRenderer>();
+        ResetLineColor(line);
         line.positionCount = 2;
         return line;
+    }
+
+    private static void ResetLineColor(LineRenderer line)
+    {
+        line.startColor = line.endColor = instance.NormalLineColor;
     }
 
     public static void OnNodeMove(Connection node)
@@ -105,6 +107,12 @@ public class ConnectionManager : MonoBehaviour
         var position = (Vector3)node.Output.anchoredPosition;
         position.y += node.Output.sizeDelta.y / 2;
         position += (Vector3)node.Output.parent.GetComponent<RectTransform>().anchoredPosition;
+
+        if (node.GetComponent<RootNode>() != null)
+        {
+            position.x -= 0.75f * node.Output.parent.GetComponent<RectTransform>().sizeDelta.x;
+        }
+
         return position;
     }
 
@@ -122,7 +130,7 @@ public class ConnectionManager : MonoBehaviour
         if (instance == null || AllConnections == null)
             return;
 
-        foreach(var connection in AllConnections)
+        foreach (var connection in AllConnections)
         {
             Destroy(connection.ConnectionLine);
         }
@@ -134,16 +142,76 @@ public class ConnectionManager : MonoBehaviour
         if (!ConnectionDictionary.ContainsKey(node))
             return;
 
+        if (GetChildConnectionCount(node) >= 2)
+        {
+            Debug.Log("rm CP");
+            OnCPRemoved(node);
+            // Gori knopochka kill
+        }
+
         foreach (var info in ConnectionDictionary[node])
         {
             Destroy(info.ConnectionLine);
 
             if (info.StartPoint != node)
+            {
+                if (GetChildConnectionCount(info.StartPoint) == 2)
+                {
+                    Debug.Log("rm parent CP");
+                    OnCPRemoved(info.StartPoint);
+                    // Kill
+                }
+
                 ConnectionDictionary[info.StartPoint].Remove(info);
-            else ConnectionDictionary[info.FinishPoint].Remove(info);
+            }
+            else
+            {
+                ConnectionDictionary[info.FinishPoint].Remove(info);
+            }
             AllConnections.Remove(info);
         }
         ConnectionDictionary.Remove(node);
+    }
+
+    public static List<Connection> GetNodeParents(Connection child)
+    {
+        return ConnectionDictionary[child].Where(x => x.FinishPoint == child).Select(x => x.StartPoint).ToList();
+    }
+
+    private static void OnCPRemoved(Connection parent)
+    {
+        foreach (var info in ConnectionDictionary[parent].Where(x => x.StartPoint == parent))
+        {
+            ResetLineColor(info.ConnectionLine);
+            info.FinishPoint.GetComponentInChildren<UnityEngine.UI.Button>().interactable = false;
+        }
+    }
+
+    private static void OnCPAdded(Connection parent)
+    {
+        foreach (var info in ConnectionDictionary[parent].Where(x => x.StartPoint == parent))
+        {
+            SelectCPLineColor(info.ConnectionLine);
+            info.FinishPoint.GetComponentInChildren<UnityEngine.UI.Button>().interactable = true;
+        }
+    }
+
+    private static void SelectCPLineColor(LineRenderer line)
+    {
+        line.startColor = line.endColor = instance.CPLineColor;
+    }
+
+    public static bool IsConnectionLineActive()
+    {
+        return StartPoint != null;
+    }
+
+    public static void ForceFinishConnection(Connection finish)
+    {
+        Current = finish;
+        //instance.currentLine = CreateConnectionLine();
+        //instance.currentLine.SetPositions(new[] { GetOutputPosition(StartPoint), Vector3.zero });
+        instance.FinishConnection();
     }
 
     public void FinishConnection()
@@ -174,6 +242,23 @@ public class ConnectionManager : MonoBehaviour
         if (!ConnectionDictionary.ContainsKey(info.FinishPoint))
             ConnectionDictionary[info.FinishPoint] = new HashSet<ConnectionInfo>();
         ConnectionDictionary[info.FinishPoint].Add(info);
+
+        int childCount = GetChildConnectionCount(info.StartPoint);
+        if (childCount == 2)
+        {
+            Debug.Log("new CP");
+            OnCPAdded(info.StartPoint);
+        }
+        else if (childCount > 2)
+        {
+            info.FinishPoint.GetComponentInChildren<UnityEngine.UI.Button>().interactable = true;
+            SelectCPLineColor(info.ConnectionLine);
+        }
+    }
+
+    private static int GetChildConnectionCount(Connection StartPoint)
+    {
+        return ConnectionDictionary[StartPoint].Where(x => x.StartPoint == StartPoint).Count();
     }
 
     public static void AddConnection(Connection startPoint, Connection finishPoint, LineRenderer connection)

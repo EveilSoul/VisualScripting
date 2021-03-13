@@ -121,7 +121,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
     {
         NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().ClearAll();
         NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().ClearAll();
-        TextField.text = "";
+        //TextField.text = "";
         foreach (var p in panels)
         {
             Destroy(p);

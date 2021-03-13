@@ -4189,9 +4189,9 @@ GameObject:
   - component: {fileID: 2697186861992908355}
   - component: {fileID: 3907410099243572637}
   - component: {fileID: 4197084424855900422}
-  - component: {fileID: 7123152122136920046}
+  - component: {fileID: 121319063424967344}
   m_Layer: 5
-  m_Name: ChooseActionRepl
+  m_Name: Branch
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4258,7 +4258,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7123152122136920046
+--- !u!114 &121319063424967344
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4267,15 +4267,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 7367374492684652156}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a5d307b71e7b53846a674f5622c0914e, type: 3}
+  m_Script: {fileID: 11500000, guid: 683084095c0ba9841ac840b9ac809be9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ID: -1
-  Character: {fileID: 5439218220295375273, guid: 4d20b923ae21a7f498d23ac1a0ad28c6, type: 3}
-  Parent: {fileID: 0}
-  AddButton: {fileID: 0}
-  TextField: {fileID: 8676562816638324859}
-  characterNames: []
+  TypeDropdown: {fileID: 182751285020862982}
+  Text: {fileID: 8676562816638324859}
+  Button: {fileID: 0}
 --- !u!1 &7465469142159888294
 GameObject:
   m_ObjectHideFlags: 0
@@ -5313,7 +5311,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1171054772945501558}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 121319063424967344}
+        m_TargetAssemblyTypeName: BranchDescription, Assembly-CSharp
+        m_MethodName: Save
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &8701595902711265830
 GameObject:
   m_ObjectHideFlags: 0
@@ -7990,7 +8000,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8772995073755116954
 RectTransform:
   m_ObjectHideFlags: 0
@@ -8109,10 +8119,10 @@ RectTransform:
   m_Father: {fileID: 8772995073530479674}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 80, y: -80}
+  m_SizeDelta: {x: 120, y: 120}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8772995073782518746
 CanvasRenderer:
@@ -8889,7 +8899,7 @@ GameObject:
   - component: {fileID: 8772995074134479864}
   - component: {fileID: 8772995074134479863}
   m_Layer: 5
-  m_Name: InputField
+  m_Name: ActionDescription
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

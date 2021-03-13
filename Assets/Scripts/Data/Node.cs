@@ -3,12 +3,25 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Node : MonoBehaviour, IPointerClickHandler
 {
     public int Id;
     public GameObject Panel;
-    public NodeDescriptionCharactersPanel panelMenu;
+
+    private NodeDescriptionCharactersPanel panelMenu;
+    public NodeDescriptionCharactersPanel PanelMenu
+    {
+        get
+        {
+            if (panelMenu == null && GetComponent<RootNode>() == null)
+                panelMenu = Panel.GetComponent<NodeData>().NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>();
+            return panelMenu;
+        }
+    }
+
+    public ChoseQuestPanel questPanel;
 
     public string Name;
 
@@ -19,6 +32,20 @@ public class Node : MonoBehaviour, IPointerClickHandler
     protected void Start()
     {
         nodeConnection = gameObject.GetComponent<Connection>();
+    }
+
+    public void OnQuestButtonClick(Button button)
+    {
+        // Выключаем все ненужное
+        var br = Panel.GetComponentsInChildren<BranchDescription>(true).First();
+        br.ID = Id;
+        br.Button = button;
+        br.gameObject.SetActive(true);
+        // Обычная процедура активации панели из ноды
+        Panel.SetActive(true);
+        PanelMenu?.OpenExistNode(Id);
+
+        Panel.GetComponentsInChildren<NodeDescriptionCharactersPanel>(true).First(x => x.name == "NodeDescription-Panel").gameObject.SetActive(false);
     }
 
     public void InitializeID()
@@ -39,9 +66,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
         if (eventData.clickCount == 2)
         {
             Panel.SetActive(true);
-            if (panelMenu == null && GetComponent<RootNode>() == null)
-                panelMenu = Panel.GetComponent<NodeData>().NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>();
-            panelMenu?.OpenExistNode(Id);
+            PanelMenu?.OpenExistNode(Id);
+            Debug.Log(GraphController.GetAllNodeTextByRootId(Id));
         }
 
         GraphController.OnNodePointerClick(this);

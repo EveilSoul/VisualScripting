@@ -6,61 +6,36 @@ using System.Threading.Tasks;
 
 public static class BranchManager
 {
-    public static void AddBranch(int rootID)
+    private static void AddBranch(int nodeID, BranchType branchType, string value)
     {
-        DataManager.instance.Branches.Add(new Branch()
+        var branch = new Branch()
         {
-            RootID = rootID,
-            Action_Replicas = new List<Action_Replica>()
-        });
-    }
-
-    public static void RemoveBranch(int rootID)
-    {
-        DataManager.instance.Branches.Remove(DataManager.instance.Branches.First(x => x.RootID == rootID));
-    }
-
-    public static void AddAction_Replica(int rootID, int nodeID, BranchType branchType, string value)
-    {
-        var ar = new Action_Replica()
-        {
-            RootID = rootID,
             NodeID = nodeID,
             BranchType = branchType,
             Value = value
         };
-        DataManager.instance.Branches.First(x => x.RootID == rootID).Action_Replicas.Add(ar);
+        DataManager.instance.Branches.Add(branch);
     }
 
-    public static void RemoveAction_Replica(int rootID, int nodeID)
+    private static void RemoveBranch(int nodeID)
     {
-        var ac_rep = DataManager.instance.Branches.First(x => x.RootID == rootID).Action_Replicas;
-        ac_rep.Remove(ac_rep.First(x => x.RootID == rootID && x.NodeID == nodeID));
+        DataManager.instance.Branches.Remove(DataManager.instance.Branches.First(x => x.NodeID == nodeID));
     }
 
-    public static void SaveAction_Replica(int rootID, int nodeID, BranchType branchType, string value)
+    public static void SaveBranch(int nodeID, BranchType branchType, string value)
     {
-        if (DataManager.instance.Branches.Exists(x => x.RootID == rootID))
+        if (DataManager.instance.Branches.Exists(x => x.NodeID == nodeID))
+            RemoveBranch(nodeID);
+
+        if (value != "")
         {
-            var ac_rep = DataManager.instance.Branches.First(x => x.RootID == rootID).Action_Replicas;
-            if (ac_rep.Exists(x => x.NodeID == nodeID))
-            {
-                RemoveAction_Replica(rootID, nodeID);
-                AddAction_Replica(rootID, nodeID, branchType, value);
-            }
+            AddBranch(nodeID, branchType, value);
         }
     }
 }
 
 public struct Branch
 {
-    public int RootID;
-    public List<Action_Replica> Action_Replicas;
-}
-
-public struct Action_Replica
-{
-    public int RootID;
     public int NodeID;
     public BranchType BranchType;
     public string Value;

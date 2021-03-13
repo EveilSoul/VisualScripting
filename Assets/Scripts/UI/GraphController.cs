@@ -28,8 +28,8 @@ public class GraphController : MonoBehaviour
 
     public Vector2 DuplicateOffset;
 
-    private bool canCloseCreationMenu;
-    private bool IsPointerOutNode = true;
+    public static bool IsPointerOutMenu;
+    public static bool IsPointerOutNode = true;
 
     public static Dictionary<int, Node> Nodes;
     public static Dictionary<int, NodeData> NodeData;
@@ -51,6 +51,25 @@ public class GraphController : MonoBehaviour
     public void ResetNodesId()
     {
         PlayerPrefs.SetInt("NodeId", 1);
+    }
+
+    public static string GetAllNodeTextByRootId(int id)
+    {
+        var result = new List<string>();
+        var curent = Nodes[id].GetComponent<Connection>();
+
+        do
+        {
+            if (curent.GetComponent<RootNode>() == null)
+                result.Add(curent.Node.Panel.GetComponentsInChildren<InputField>(true).First(x => x.name == "ActionDescription").text + '\n');
+
+            var parents = ConnectionManager.GetNodeParents(curent);
+            if (parents.Count > 0)
+                curent = parents[0];
+            else curent = null;
+        } while (curent != null);
+        result.Reverse();
+        return result.Aggregate((x, y) => x + y);
     }
 
     public static void OnNodePointerClick(Node node)
@@ -93,12 +112,12 @@ public class GraphController : MonoBehaviour
             else EnableNodeMenu();
         }
 
-        if (CreationMenu.activeInHierarchy && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0) && canCloseCreationMenu))
+        if (CreationMenu.activeInHierarchy && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0) && IsPointerOutMenu))
         {
             CreationMenu.SetActive(false);
         }
 
-        if (NodeMenu.activeInHierarchy && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0) && canCloseCreationMenu))
+        if (NodeMenu.activeInHierarchy && (Input.GetKeyDown(KeyCode.Escape) || Input.GetMouseButtonDown(0) && IsPointerOutMenu))
         {
             HideNodeMenu();
         }
@@ -136,8 +155,16 @@ public class GraphController : MonoBehaviour
         menuTransform.anchoredPosition = MousePosition + offset;
     }
 
-    public void OnInstantiateNodeButtonClick(GameObject nodePrefab) => InstantiateNode(nodePrefab);
-
+    public void OnInstantiateNodeButtonClick(GameObject nodePrefab)
+    {
+        var node = InstantiateNode(nodePrefab);
+        if (ConnectionManager.IsConnectionLineActive())
+        {
+            Connection finish = node.GetComponent<Connection>();
+            if (finish != null)
+                ConnectionManager.ForceFinishConnection(finish);
+        }
+    }
 
     public GameObject InstantiateNode(GameObject nodePrefab)
     {
@@ -145,6 +172,7 @@ public class GraphController : MonoBehaviour
         var panel = Instantiate(NodePanelPrefab, PanelBackground.transform);
         nodeObj.GetComponent<RectTransform>().anchoredPosition = MousePosition;
         Node node = nodeObj.GetComponent<Node>();
+        QuestButtonColors.ApplyColorsToButton(false, node.GetComponentInChildren<Button>());
         node.InitializeID();
         node.Panel = panel;
         InitializePanelId(node);
@@ -223,15 +251,15 @@ public class GraphController : MonoBehaviour
     }
 
     public void SaveNode(GameObject node)
-    { 
+    {
         var id = int.Parse(node.GetComponentsInChildren<Text>().First(x => x.name == "ID").text);
         NodeData[id].NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Save(id);
         //FindObjectsOfType<Node>().First(x => x.Id == id).panelMenu.Save(id);
     }
 
-    public void OnMenuPointerEnter() => instance.canCloseCreationMenu = false;
-    public void OnMenuPinterExit() => instance.canCloseCreationMenu = true;
+    public void OnMenuPointerEnter() => IsPointerOutMenu = false;
+    public void OnMenuPinterExit() => IsPointerOutMenu = true;
 
-    public void OnNodePointerEnter() => instance.IsPointerOutNode = false;
-    public void OnNodePinterExit() => instance.IsPointerOutNode = true;
+    public void OnNodePointerEnter() => IsPointerOutNode = false;
+    public void OnNodePinterExit() => IsPointerOutNode = true;
 }
