@@ -55,7 +55,7 @@ public class GraphController : MonoBehaviour
         PlayerPrefs.SetInt("NodeId", 1);
     }
 
-    public static string GetAllNodeTextByRootId(int id)
+    public static string GetAllNodeTextById(int id)
     {
         var result = new List<string>();
         var curent = Nodes[id].GetComponent<Connection>();

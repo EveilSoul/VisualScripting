@@ -69,7 +69,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
             Panel.SetActive(true);
             PanelMenu?.OpenExistNode(Id);
             if(Id != RootNode.instance.Id)
-                Debug.Log(GraphController.GetAllNodeTextByRootId(Id));
+                Debug.Log(GraphController.GetAllNodeTextById(Id));
         }
 
         GraphController.OnNodePointerClick(this);
