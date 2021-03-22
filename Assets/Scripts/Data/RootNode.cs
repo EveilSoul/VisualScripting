@@ -5,7 +5,9 @@ using UnityEngine.EventSystems;
 
 public class RootNode : Node
 {
-    private static RootNode instance;
+    public static RootNode instance;
+
+    public static bool IsBuldSuccess;
 
     // Start is called before the first frame update
     void Start()
@@ -25,8 +27,10 @@ public class RootNode : Node
 
     public static void StartBuild()
     {
+        IsBuldSuccess = true;
         instance.WorldState = DataManager.instance.Characters.Clone();
         instance.RecursiveBuild();
+        GraphController.SetPlayButton(IsBuldSuccess);
     }
 
     // Update is called once per frame

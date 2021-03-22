@@ -34,6 +34,7 @@ public static class BranchManager
     }
 }
 
+[Serializable]
 public struct Branch
 {
     public int NodeID;

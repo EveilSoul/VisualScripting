@@ -61,6 +61,12 @@ public class ConnectionManager : MonoBehaviour
     }
 
 
+    public static Node GetStartNode()
+    {
+        return ConnectionDictionary[RootNode.instance.GetComponent<Connection>()].First().FinishPoint.Node;
+    }
+
+
     public void StartConnection()
     {
         StartPoint = Current;
@@ -176,6 +182,11 @@ public class ConnectionManager : MonoBehaviour
     public static List<Connection> GetNodeParents(Connection child)
     {
         return ConnectionDictionary[child].Where(x => x.FinishPoint == child).Select(x => x.StartPoint).ToList();
+    }
+
+    public static List<Connection> GetNodeChilds(Connection parent)
+    {
+        return ConnectionDictionary[parent].Where(x => x.StartPoint == parent).Select(x => x.FinishPoint).ToList();
     }
 
     private static void OnCPRemoved(Connection parent)

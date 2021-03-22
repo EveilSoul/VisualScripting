@@ -83,6 +83,7 @@ public class DataStorage : MonoBehaviour
     {
         instance.Data.Characters = DataManager.instance.Characters;
         instance.Data.NodeData = DataManager.instance.Nodes;
+        instance.Data.Branches = DataManager.instance.Branches;
         instance.Data.Properties = DataManager.instance.Properties
             .Select(x => new Storage_Property() { Name = x.Key, Type = x.Value.Type, CustomValues = x.Value.CustomValues })
             .ToList();
@@ -121,6 +122,23 @@ public class DataStorage : MonoBehaviour
             PlaceNodes();
             AddConnections();
             InitializeDataManager();
+            InititalizeBranches(DataManager.instance.Branches);
+            instance.DiagramNameField.text = instance.Data.DiagramName;
+        }
+    }
+
+    private static void InititalizeBranches(List<Branch> branches)
+    {
+        if (branches == null)
+            return;
+
+        foreach (var node in GraphController.Nodes.Values)
+        {
+            var br = branches.FirstOrDefault(x => x.NodeID == node.Id);
+            if (br.Value != null)
+            {
+                node.Panel.GetComponentInChildren<BranchDescription>(true).Initialize(br.NodeID, br.BranchType, br.Value, node.gameObject);
+            }
         }
     }
 
@@ -128,6 +146,7 @@ public class DataStorage : MonoBehaviour
     {
         DataManager.instance.Characters = instance.Data.Characters;
         DataManager.instance.Nodes = instance.Data.NodeData;
+        DataManager.instance.Branches = instance.Data.Branches;
 
         DataManager.instance.Properties = new Dictionary<string, Property>();
         instance.Data.Properties.ForEach(x => DataManager.instance.Properties[x.Name] = new Property() { Type = x.Type, CustomValues = x.CustomValues });

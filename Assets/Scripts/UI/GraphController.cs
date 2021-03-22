@@ -28,6 +28,8 @@ public class GraphController : MonoBehaviour
 
     public Vector2 DuplicateOffset;
 
+    public Button PlayButton;
+
     public static bool IsPointerOutMenu;
     public static bool IsPointerOutNode = true;
 
@@ -129,6 +131,11 @@ public class GraphController : MonoBehaviour
                 selectedNode.enabled = false;
             }
         }
+    }
+
+    public static void SetPlayButton(bool value)
+    {
+        instance.PlayButton.interactable = value;
     }
 
     private void EnableNodeMenu()

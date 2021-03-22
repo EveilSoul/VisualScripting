@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -67,7 +68,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
         {
             Panel.SetActive(true);
             PanelMenu?.OpenExistNode(Id);
-            Debug.Log(GraphController.GetAllNodeTextByRootId(Id));
+            if(Id != RootNode.instance.Id)
+                Debug.Log(GraphController.GetAllNodeTextByRootId(Id));
         }
 
         GraphController.OnNodePointerClick(this);
@@ -90,14 +92,18 @@ public class Node : MonoBehaviour, IPointerClickHandler
             else
             {
                 connection.FinishPoint.Node.OnErrorOccurred();
+                RootNode.IsBuldSuccess = false;
             }
         }
     }
 
     public void ApplyEffects()
     {
-        var nodeData = DataManager.instance.Nodes.First(x => x.Id == Id);
+        var nodeData = DataManager.instance.Nodes.FirstOrDefault(x => x.Id == Id);
         var effects = nodeData.Effect;
+
+        if (effects.NodeCharacters == null)
+            return;
 
         foreach (var character in effects.NodeCharacters)
         {
@@ -140,18 +146,23 @@ public class Node : MonoBehaviour, IPointerClickHandler
 
     public bool CheckCondition()
     {
-        var nodeData = DataManager.instance.Nodes.First(x => x.Id == Id);
+        var nodeData = DataManager.instance.Nodes.FirstOrDefault(x => x.Id == Id);
         var condition = nodeData.Condition;
+        if (condition.NodeCharacters == null)
+            return true;
         if (WorldState != null)
         {
-            
-
             foreach (var character in condition.NodeCharacters)
             {
                 var worldStateCharacter = WorldState.First(x => x.Name == character.Name);
                 foreach (var conditionProperty in character.PropertyValues)
                 {
-                    CharacterProperty worldStateProperty = worldStateCharacter.Properties.First(x => x.Name == conditionProperty.Name);
+                    CharacterProperty worldStateProperty = worldStateCharacter.Properties.FirstOrDefault(x => x.Name == conditionProperty.Name);
+                    if (worldStateProperty == null)
+                    {
+                        LogError($"character {character.Name} has no property named {conditionProperty.Name}");
+                        return false;
+                    }
                     if (conditionProperty.PropertyType == PropertyType.Int)
                     {
                         var operand = conditionProperty.Value[0];
@@ -178,7 +189,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
 
                         if (!isSuccess)
                         {
-                            Debug.LogError($"Condition error at {ToString()}. " +
+                            LogError($"Condition error at {ToString()}. " +
                                 $"Character: {character.Name}, " +
                                 $"Property {worldStateProperty.Name}. " +
                                 $"Expected: real value {operand} {conditionValue}," +
@@ -188,7 +199,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
                     }
                     else if (worldStateProperty.Value != conditionProperty.Value)
                     {
-                        Debug.LogError($"Condition error at {ToString()}. " +
+                        LogError($"Condition error at {ToString()}. " +
                             $"Character: {character.Name}, " +
                             $"Property {worldStateProperty.Name}. " +
                             $"Expected  value: {conditionProperty.Value}. " +
@@ -204,5 +215,10 @@ public class Node : MonoBehaviour, IPointerClickHandler
             return false;
         }
         return true;
+    }
+
+    private void LogError(string message)
+    {
+        Debug.LogError(message);
     }
 }

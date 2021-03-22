@@ -11,6 +11,21 @@ public class BranchDescription : MonoBehaviour
     public InputField Text;
     [HideInInspector] public Button Button;
 
+
+    public void Initialize(int id, BranchType branchType, string text, GameObject node)
+    {
+        ID = id;
+        TypeDropdown.value = (int)branchType;
+        Text.text = text;
+
+        var button = node.GetComponentInChildren<Button>();
+
+        if (Text.text.Length > 0)
+            QuestButtonColors.ApplyColorsToButton(true, button);
+        else
+            QuestButtonColors.ApplyColorsToButton(false, button);
+    }
+
     public void Save()
     {
 

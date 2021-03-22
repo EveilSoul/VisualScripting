@@ -12,6 +12,7 @@ public class NodesData : ScriptableObject
     public List<Saving_Node> NodeData;
     public List<Character> Characters;
     public List<Storage_Property> Properties;
+    public List<Branch> Branches;
 }
 
 public static class DiagramInitializer
@@ -25,6 +26,7 @@ public static class DiagramInitializer
         result.NodeData = new List<Saving_Node>();
         result.Characters = new List<Character>();
         result.Properties = new List<Storage_Property>();
+        result.Branches = new List<Branch>();
         return result;
     }
 }
