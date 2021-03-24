@@ -29,7 +29,7 @@ public class CharacterAddPanel : MonoBehaviour
         SaveButton.interactable = false;
         NameField.text = "";
         ClearPanels();
-        AddPropertyButton.interactable = true;
+        AddPropertyButton.interactable = propertiesName.Count > 0 ? true : false;
         isOpenedExist = false;
     }
 
@@ -77,8 +77,9 @@ public class CharacterAddPanel : MonoBehaviour
         SaveButton.interactable = true;
     }
 
-    public void OnChangeName(string name)
+    public void OnChangeName()
     {
+        name = NameField.text;
         if (name == "" || DataManager.instance.Characters.Select(x => x.Name).Contains(name))
             SaveButton.interactable = false;
         else
