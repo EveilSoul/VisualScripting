@@ -19,3 +19,20 @@ public class Character
         };
     }
 }
+
+[System.Serializable]
+public class WorldStateCharacter
+{
+    public string Name;
+    public List<WorldStateCharacterProperty> Properties;
+
+    public WorldStateCharacter Clone()
+    {
+        return new WorldStateCharacter()
+        {
+            Name = Name,
+            Properties = Properties.Select(x => new WorldStateCharacterProperty() { Name = x.Name, Values = x.Values.Clone(), Type = x.Type }).ToList()
+        };
+    }
+}
+

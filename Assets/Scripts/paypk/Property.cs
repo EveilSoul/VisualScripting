@@ -25,6 +25,18 @@ public class CharacterProperty
     }
 }
 
+public class WorldStateCharacterProperty
+{
+    public string Name;
+    public PropertyType Type;
+    public List<string> Values;
+
+    public override bool Equals(object obj)
+    {
+        return this.Name == ((CharacterProperty)obj).Name;
+    }
+}
+
 public enum PropertyType
 {
     Bool,

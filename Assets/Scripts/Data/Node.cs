@@ -26,7 +26,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
 
     public string Name;
 
-    public List<Character> WorldState;
+    public List<WorldStateCharacter> WorldState;
 
     private Connection nodeConnection;
 
@@ -68,12 +68,79 @@ public class Node : MonoBehaviour, IPointerClickHandler
         {
             Panel.SetActive(true);
             PanelMenu?.OpenExistNode(Id);
-            if(Id != RootNode.instance.Id)
+            if (Id != RootNode.instance.Id)
                 Debug.Log(GraphController.GetAllNodeTextByRootId(Id));
         }
 
         GraphController.OnNodePointerClick(this);
         GraphController.InitializePanelId(this);
+    }
+
+    public void ApplyEffectsBuild()
+    {
+        if (!ConnectionManager.ConnectionDictionary.ContainsKey(nodeConnection))
+            return;
+
+        foreach (var connection in ConnectionManager.ConnectionDictionary[nodeConnection].Where(x => x.StartPoint == nodeConnection))
+        {
+            if (connection.FinishPoint.Node.WorldState == null)
+                connection.FinishPoint.Node.WorldState = WorldState.Clone();
+            else
+            {
+                var state = connection.FinishPoint.Node.WorldState;
+                foreach (var character in WorldState.Clone())
+                {
+                    var properties = state.FirstOrDefault(x => x.Name == character.Name)?.Properties;
+
+                    foreach (var property in character.Properties)
+                    {
+                        if (properties != null && properties.Exists(x => x.Name == property.Name))
+                        {
+                            var findedProperty = properties.First(x => x.Name == property.Name);
+                            findedProperty.Values.AddRange(property.Values);
+                            findedProperty.Values = findedProperty.Values.Distinct().ToList();
+                        }
+                        else
+                        {
+                            if (!state.Exists(x => x.Name == character.Name))
+                            {
+                                state.Add(character);
+                                continue;
+                            }
+                            else if (properties == null)
+                            {
+                                WorldStateCharacter worldCharacter = state.First(x => x.Name == character.Name);
+                                worldCharacter.Properties = new List<WorldStateCharacterProperty>();
+                                properties = worldCharacter.Properties;
+                            }
+                            properties.Add(property);
+                        }
+                    }
+                }
+            }
+
+            connection.FinishPoint.Node.ApplyEffects();
+            connection.FinishPoint.Node.ApplyEffectsBuild();
+        }
+    }
+
+    public void CheckConditionBuild()
+    {
+        if (!ConnectionManager.ConnectionDictionary.ContainsKey(nodeConnection))
+            return;
+
+        foreach (var connection in ConnectionManager.ConnectionDictionary[nodeConnection].Where(x => x.StartPoint == nodeConnection))
+        {
+            if (connection.FinishPoint.Node.CheckCondition())
+            {
+                connection.FinishPoint.Node.CheckConditionBuild();
+            }
+            else
+            {
+                connection.FinishPoint.Node.OnErrorOccurred();
+                RootNode.IsBuldSuccess = false;
+            }
+        }
     }
 
     public void RecursiveBuild()
@@ -107,32 +174,70 @@ public class Node : MonoBehaviour, IPointerClickHandler
 
         foreach (var character in effects.NodeCharacters)
         {
-            var worldStateCharacter = WorldState.First(x => x.Name == character.Name);
+            var worldStateCharacter = WorldState.FirstOrDefault(x => x.Name == character.Name);
+
+            if (worldStateCharacter == null)
+            {
+                var newChar = new WorldStateCharacter() { Name = character.Name, Properties = character.PropertyValues.Select(p => new WorldStateCharacterProperty() { Name = p.Name, Type = p.PropertyType, Values = new List<string>() { p.Value } }).ToList() };
+                worldStateCharacter = newChar;
+                WorldState.Add(newChar);
+            }
+
             foreach (var effectProperty in character.PropertyValues)
             {
-                CharacterProperty worldStateProperty = worldStateCharacter.Properties.First(x => x.Name == effectProperty.Name);
-                if(effectProperty.PropertyType == PropertyType.Int)
+                var worldStateProperty = worldStateCharacter.Properties.FirstOrDefault(x => x.Name == effectProperty.Name);
+
+                if (worldStateProperty == null)
+                {
+                    worldStateProperty = new WorldStateCharacterProperty();
+                    worldStateProperty.Name = effectProperty.Name;
+                    worldStateProperty.Type = effectProperty.PropertyType;
+
+                    if (effectProperty.PropertyType == PropertyType.Int)
+                        worldStateProperty.Values = new List<string>() { "0" };
+
+
+                    if (worldStateCharacter.Properties == null)
+                        worldStateCharacter.Properties = new List<WorldStateCharacterProperty>();
+                    worldStateCharacter.Properties.Add(worldStateProperty);
+                }
+
+                if (effectProperty.PropertyType == PropertyType.Int)
                 {
                     var operand = effectProperty.Value[0];
                     var effectValue = int.Parse(effectProperty.Value.Substring(1, effectProperty.Value.Length - 1));
-                    var worldValue = int.Parse(worldStateProperty.Value);
+                    var worldValues = worldStateProperty.Values.Select(x => int.Parse(x)).ToList();
 
                     switch (operand)
                     {
                         case '=':
-                            worldValue = effectValue;
+                            for (int i = 0; i < worldValues.Count; i++)
+                            {
+                                worldValues[i] = effectValue;
+                            }
                             break;
                         case '+':
-                            worldValue += effectValue;
+                            for (int i = 0; i < worldValues.Count; i++)
+                            {
+                                worldValues[i] += effectValue;
+                            }
                             break;
                         case '-':
-                            worldValue -= effectValue;
+                            for (int i = 0; i < worldValues.Count; i++)
+                            {
+                                worldValues[i] -= effectValue;
+                            }
                             break;
                     }
 
-                    worldStateProperty.Value = worldValue.ToString();
+                    worldStateProperty.Values = worldValues.Select(x => x.ToString()).ToList();
                 }
-                else worldStateProperty.Value = effectProperty.Value;
+                else
+                {
+                    if (worldStateProperty.Values == null)
+                        worldStateProperty.Values = new List<string>();
+                    worldStateProperty.Values.Add(effectProperty.Value);
+                }
             }
         }
     }
@@ -157,7 +262,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
                 var worldStateCharacter = WorldState.First(x => x.Name == character.Name);
                 foreach (var conditionProperty in character.PropertyValues)
                 {
-                    CharacterProperty worldStateProperty = worldStateCharacter.Properties.FirstOrDefault(x => x.Name == conditionProperty.Name);
+                    var worldStateProperty = worldStateCharacter.Properties.FirstOrDefault(x => x.Name == conditionProperty.Name);
                     if (worldStateProperty == null)
                     {
                         LogError($"character {character.Name} has no property named {conditionProperty.Name}");
@@ -167,22 +272,22 @@ public class Node : MonoBehaviour, IPointerClickHandler
                     {
                         var operand = conditionProperty.Value[0];
                         var conditionValue = int.Parse(conditionProperty.Value.Substring(1, conditionProperty.Value.Length - 1));
-                        var worldValue = int.Parse(worldStateProperty.Value);
+                        var worldValues = worldStateProperty.Values.Select(x => int.Parse(x));
 
                         bool isSuccess = true;
 
                         switch (operand)
                         {
                             case '=':
-                                if (worldValue != conditionValue)
+                                if (worldValues.All(x => x != conditionValue))
                                     isSuccess = false;
                                 break;
                             case '>':
-                                if (worldValue <= conditionValue)
+                                if (worldValues.All(x => x <= conditionValue))
                                     isSuccess = false;
                                 break;
                             case '<':
-                                if (worldValue >= conditionValue)
+                                if (worldValues.All(x => x >= conditionValue))
                                     isSuccess = false;
                                 break;
                         }
@@ -193,17 +298,17 @@ public class Node : MonoBehaviour, IPointerClickHandler
                                 $"Character: {character.Name}, " +
                                 $"Property {worldStateProperty.Name}. " +
                                 $"Expected: real value {operand} {conditionValue}," +
-                                $"but real value is {worldValue}");
+                                $"but real values is {worldValues.Select(x => x.ToString()).Aggregate((x, y) => x + " " + y)}");
                             return false;
                         }
                     }
-                    else if (worldStateProperty.Value != conditionProperty.Value)
+                    else if (worldStateProperty.Values.All(x => x != conditionProperty.Value))
                     {
                         LogError($"Condition error at {ToString()}. " +
                             $"Character: {character.Name}, " +
                             $"Property {worldStateProperty.Name}. " +
                             $"Expected  value: {conditionProperty.Value}. " +
-                            $"Real value: {worldStateProperty.Value}");
+                            $"Real value: {worldStateProperty.Values.Aggregate((x, y) => x + " " + y)}");
                         return false;
                     }
                 }
