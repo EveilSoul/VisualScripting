@@ -25,7 +25,7 @@ public class PropertyEditPanel : MonoBehaviour
 
     private void OnEnable()
     {
-        SaveButton.interactable = true;
+        SaveButton.interactable = false;
     }
 
     public void AddPanel()
