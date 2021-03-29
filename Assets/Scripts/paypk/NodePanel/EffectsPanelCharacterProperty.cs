@@ -208,6 +208,6 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
 
     public void Delete()
     {
-        DataManager.instance.CharacterAddClass.Delete(Name);
+        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().DeleteProperty(ParentName, Name);
     }
 }

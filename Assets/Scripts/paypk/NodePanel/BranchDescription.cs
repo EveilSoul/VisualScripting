@@ -40,7 +40,7 @@ public class BranchDescription : MonoBehaviour
 
         BranchManager.SaveBranch(ID, (BranchType)TypeDropdown.value, Text.text);
 
-        gameObject.transform.parent.GetComponentsInChildren<NodeDescriptionCharactersPanel>(true).First(x => x.name == "NodeDescription-Panel").gameObject.SetActive(true);
+        gameObject.transform.parent.GetComponentsInChildren<NodeDescriptionCharactersPanel>(true).First(x => x.name == "NodeDescriptionn-Panel").gameObject.SetActive(true);
         gameObject.transform.parent.gameObject.SetActive(false);
         gameObject.SetActive(false);
     }
