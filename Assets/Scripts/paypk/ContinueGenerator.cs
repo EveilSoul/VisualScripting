@@ -43,6 +43,9 @@ public class ContinueGenerator : MonoBehaviour
         var node = GraphController.CreateNodeWithText(nodeTransform.anchoredPosition + offset, resText.Substring(prevText.Length - 1));
 
         ConnectionManager.ForceConnection(GraphController.Nodes[ID], node.GetComponent<Node>());
+
+        // TODO закрывать меню, а то неудобно: сгенерировал текст, нажал сохранить, а тебя кидает в меню предыдущее, 
+        // когда хочется посомтреть на сгенерированный результат
     }
 
     private string resText;
