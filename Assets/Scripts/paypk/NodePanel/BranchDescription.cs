@@ -31,7 +31,7 @@ public class BranchDescription : MonoBehaviour
 
         if (ID == -1)
         {
-            NodeData.instance.GetMyNodeData(ref ID, transform);
+            NodeData.GetMyNodeData(ref ID, transform);
         }
         if (Text.text.Length > 0)
             QuestButtonColors.ApplyColorsToButton(true, Button);

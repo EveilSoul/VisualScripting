@@ -108,7 +108,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
     private List<Dropdown.OptionData> GetDropdownList()
     {
         var first = DataManager.SelectTypeValue;
-        options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().GetMyProperties(ParentName, Name)).ToList();
+        options = new List<string>() { first }.Union(NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
 
@@ -140,7 +140,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
         Name = options[index];
         var property = Properties[Name];
         PropertyType = property.Type;
-        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OnChangePropertyType(ParentName, Name);
+        NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OnChangePropertyType(ParentName, Name);
 
 
         switch (PropertyType)
@@ -196,7 +196,7 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
 
     public void Delete()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().DeleteProperty(ParentName, Name);
+        NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().DeleteProperty(ParentName, Name);
     }
 
     

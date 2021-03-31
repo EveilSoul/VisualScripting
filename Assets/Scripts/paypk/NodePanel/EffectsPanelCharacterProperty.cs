@@ -108,7 +108,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
     private List<Dropdown.OptionData> GetDropdownList()
     {
         var first = DataManager.SelectTypeValue;
-        options = new List<string>() { first }.Union(NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().GetMyProperties(ParentName, Name)).ToList();
+        options = new List<string>() { first }.Union(NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().GetMyProperties(ParentName, Name)).ToList();
         return options.Select(x => new Dropdown.OptionData(x)).ToList();
     }
 
@@ -140,7 +140,7 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
         Name = options[index];
         var property = Properties[Name];
         PropertyType = property.Type;
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OnChangePropertyType(ParentName, Name);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OnChangePropertyType(ParentName, Name);
 
 
         switch (PropertyType)
@@ -208,6 +208,6 @@ public class EffectsPanelCharacterProperty : MonoBehaviour
 
     public void Delete()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().DeleteProperty(ParentName, Name);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().DeleteProperty(ParentName, Name);
     }
 }

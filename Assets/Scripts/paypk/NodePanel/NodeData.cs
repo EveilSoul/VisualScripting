@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class NodeData : MonoBehaviour
 {
-    public static NodeData instance;
+    
 
     public GameObject NodeDescriptionPanel;
     public GameObject CharactersPanel;
@@ -15,12 +15,9 @@ public class NodeData : MonoBehaviour
     public GameObject EffectsNodeCharactersPanel;
     public ChoseQuestPanel ChooseQuestPanel;
 
-    private void Awake()
-    {
-        instance = this;
-    }
+    
 
-    public NodeData GetMyNodeData(ref int ID, Transform transform)
+    public static NodeData GetMyNodeData(ref int ID, Transform transform)
     {
         if (ID == -1)
         {

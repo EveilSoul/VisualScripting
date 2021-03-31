@@ -173,6 +173,14 @@ public class GraphController : MonoBehaviour
         }
     }
 
+    public static GameObject CreateNodeWithText(Vector3 position, string text)
+    {
+        var node = instance.InstantiateNode(instance.ActionNodePrefab);
+        node.GetComponent<Node>().Panel.GetComponentsInChildren<InputField>().First(x => x.name == "ActionDescription").text = text;
+        node.GetComponent<RectTransform>().anchoredPosition = position;
+        return node;
+    }
+
     public GameObject InstantiateNode(GameObject nodePrefab)
     {
         var nodeObj = Instantiate(nodePrefab, Background.transform);

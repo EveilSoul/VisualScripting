@@ -21,7 +21,7 @@ public class ContinueGenerator : MonoBehaviour
         Content.text = "";
         if (ID == -1)
         {
-            NodeData.instance.GetMyNodeData(ref ID, transform);
+            NodeData.GetMyNodeData(ref ID, transform);
         }
         var text = GraphController.GetAllNodeTextById(ID);
         prevText = text;
@@ -38,7 +38,11 @@ public class ContinueGenerator : MonoBehaviour
 
     public void OnSaveClick()
     {
+        var nodeTransform = GraphController.Nodes[ID].GetComponent<RectTransform>();
+        var offset = new Vector2(175, 0);
+        var node = GraphController.CreateNodeWithText(nodeTransform.anchoredPosition + offset, resText.Substring(prevText.Length - 1));
 
+        ConnectionManager.ForceConnection(GraphController.Nodes[ID], node.GetComponent<Node>());
     }
 
     private string resText;
@@ -67,7 +71,7 @@ public class ContinueGenerator : MonoBehaviour
     {
         yield return StartCoroutine(ReceiveAnswerCoroutine());
 
-        var newText = prevText.Substring(0, prevText.Length - 1) + "<b>" + resText.Substring(prevText.Length) + "</b>";
+        var newText = prevText.Substring(0, prevText.Length - 1) + "<b>" + resText.Substring(prevText.Length - 1) + "</b>";
         Content.text = newText;
     }
 
@@ -75,7 +79,7 @@ public class ContinueGenerator : MonoBehaviour
     {
         var Bot = new TelegramBotClient("1707297164:AAH_83Ig6zQ2k0y1fkusIbjO8DrbjIRToxg"); // инициализируем API
         Bot.SetWebhookAsync("");
-        var time = 5;
+        var time = 4;
 
         
         yield return StartCoroutine(StartWaiting(time));

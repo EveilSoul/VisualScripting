@@ -19,8 +19,8 @@ public class ConditionNodeCharacterData : MonoBehaviour
 
     public void OnClick()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).NodeCharactersPanel.SetActive(false);
-        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().AddPanel(Name);
-        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.SetActive(true);
+        NodeData.GetMyNodeData(ref ID, transform).NodeCharactersPanel.SetActive(false);
+        NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().AddPanel(Name);
+        NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.SetActive(true);
     }
 }

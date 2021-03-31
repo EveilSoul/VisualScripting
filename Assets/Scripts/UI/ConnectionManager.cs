@@ -45,6 +45,16 @@ public class ConnectionManager : MonoBehaviour
         }
     }
 
+    public static void ForceConnection(Node start, Node finish)
+    {
+        var startConnection = start.GetComponent<Connection>();
+        var finishConnection = finish.GetComponent<Connection>();
+
+        var line = CreateConnectionLine();
+        line.SetPositions(new[] { GetOutputPosition(startConnection), GetInputPosition(finishConnection) });
+        AddConnection(startConnection, finishConnection, line);
+    }
+
     private void Update()
     {
         if (currentLine != null)

@@ -15,7 +15,7 @@ public class EffectsNodeCharacterPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToEffects();
+        var characters = NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToEffects();
 
         if (characters == null)
             return;

@@ -104,6 +104,6 @@ public class EffectsCharacterPanel : MonoBehaviour
 
     public void DeleteMe()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Delete(Name);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Delete(Name);
     }
 }

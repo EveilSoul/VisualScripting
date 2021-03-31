@@ -19,8 +19,8 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
     public List<string> characterNames = new List<string>();
 
     public List<string> GetNotSelectedCharacters() => DataManager.instance.Characters.Select(x => x.Name).Except(characterNames).ToList();
-    public List<string> GetSelectedCharactersToCondition() => characterNames.Except(NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().Names).ToList();
-    public List<string> GetSelectedCharactersToEffects() => characterNames.Except(NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Names).ToList(); 
+    public List<string> GetSelectedCharactersToCondition() => characterNames.Except(NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().Names).ToList();
+    public List<string> GetSelectedCharactersToEffects() => characterNames.Except(NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Names).ToList(); 
 
     public void AddCharacter(string name)
     {
@@ -64,7 +64,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         node.CharacterNames = characterNames;
         node.Text = text;
 
-        foreach (var p in NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().panels)
+        foreach (var p in NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().panels)
         {
             var nodeCharacter = new NodeCharacter();
             var charPanel = p.GetComponent<ConditionCharacterPanel>();
@@ -82,7 +82,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
             condition.NodeCharacters.Add(nodeCharacter);
         }
 
-        foreach (var p in NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().panels)
+        foreach (var p in NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().panels)
         {
             var nodeCharacter = new NodeCharacter();
             var charPanel = p.GetComponent<EffectsCharacterPanel>();
@@ -100,7 +100,7 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
             effect.NodeCharacters.Add(nodeCharacter);
         }
 
-        var chooseQuestPanel = NodeData.instance.GetMyNodeData(ref ID, transform).ChooseQuestPanel;
+        var chooseQuestPanel = NodeData.GetMyNodeData(ref ID, transform).ChooseQuestPanel;
         quest = new Quest()
         {
             Name = chooseQuestPanel.QuestNameDropdown.options[chooseQuestPanel.QuestNameDropdown.value].text,
@@ -119,8 +119,8 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
 
     public void ClearAll()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().ClearAll();
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().ClearAll();
+        NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().ClearAll();
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().ClearAll();
         //TextField.text = "";
         foreach (var p in panels)
         {
@@ -149,12 +149,12 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
 
         foreach (var p in node.Condition.NodeCharacters)
         {
-            NodeData.instance.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OpenExist(p.Name, p.PropertyValues);
+            NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OpenExist(p.Name, p.PropertyValues);
         }
 
         foreach (var p in node.Effect.NodeCharacters)
         {
-            NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OpenExist(p.Name, p.PropertyValues);
+            NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OpenExist(p.Name, p.PropertyValues);
         }
     }
 }

@@ -139,6 +139,7 @@ public class DataStorage : MonoBehaviour
             {
                 node.Panel.GetComponentInChildren<BranchDescription>(true).Initialize(br.NodeID, br.BranchType, br.Value, node.gameObject);
             }
+            node.PanelMenu?.OpenExistNode(node.Id);
         }
     }
 

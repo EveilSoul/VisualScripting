@@ -19,8 +19,8 @@ public class CharacterData : MonoBehaviour
 
     public void OnClick()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).CharactersPanel.SetActive(false);
-        NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().AddCharacter(Name);
-        NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.SetActive(true);
+        NodeData.GetMyNodeData(ref ID, transform).CharactersPanel.SetActive(false);
+        NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().AddCharacter(Name);
+        NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.SetActive(true);
     }
 }

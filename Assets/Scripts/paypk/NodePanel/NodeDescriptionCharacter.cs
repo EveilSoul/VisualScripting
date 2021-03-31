@@ -18,6 +18,6 @@ public class NodeDescriptionCharacter : MonoBehaviour
 
     public void Delete()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Delete(Name);
+        NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().Delete(Name);
     }
 }

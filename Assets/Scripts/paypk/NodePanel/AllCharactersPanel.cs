@@ -16,7 +16,7 @@ public class AllCharactersPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetNotSelectedCharacters();
+        var characters = NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetNotSelectedCharacters();
         
         foreach (var p in characters)
         {

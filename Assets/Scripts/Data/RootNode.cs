@@ -29,15 +29,10 @@ public class RootNode : Node
     public static void StartBuild()
     {
         IsBuldSuccess = true;
-        instance.WorldState = DataManager.instance.Characters.Clone()
-            .Select(x => new WorldStateCharacter()
-            {
-                Name = x.Name,
-                Properties = x.Properties.Select(p => new WorldStateCharacterProperty() { Name = p.Name, Type = p.Type, Values = new List<string>() { p.Value } }).ToList()
-            }).ToList();
+        instance.WorldState = DataManager.instance.Characters.Clone();
 
-        instance.ApplyEffectsBuild();
-        instance.CheckConditionBuild();
+        instance.StartRecursiveBuild();
+
         GraphController.SetPlayButton(IsBuldSuccess);
     }
 

@@ -15,7 +15,7 @@ public class ConditionNodeCharacterPanel : MonoBehaviour
     {
         ClearPanels();
 
-        var characters = NodeData.instance.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToCondition();
+        var characters = NodeData.GetMyNodeData(ref ID, transform).NodeDescriptionPanel.GetComponent<NodeDescriptionCharactersPanel>().GetSelectedCharactersToCondition();
 
         if (characters == null)
             return;

@@ -23,7 +23,7 @@ public class ChoseQuestPanel: MonoBehaviour
 
         if (ID >= 0)
         {
-            var chooseQuestPanel = NodeData.instance.GetMyNodeData(ref ID, transform).ChooseQuestPanel;
+            var chooseQuestPanel = NodeData.GetMyNodeData(ref ID, transform).ChooseQuestPanel;
             QuestNameDropdown.value = chooseQuestPanel.QuestNameDropdown.value;
             QuestTypeDropdown.value = chooseQuestPanel.QuestTypeDropdown.value;
         }
@@ -47,7 +47,7 @@ public class ChoseQuestPanel: MonoBehaviour
 
     public void Save()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform);
+        NodeData.GetMyNodeData(ref ID, transform);
     }
 }
 

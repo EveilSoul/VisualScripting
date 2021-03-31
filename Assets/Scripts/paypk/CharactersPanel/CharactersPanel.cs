@@ -32,6 +32,21 @@ public class CharactersPanel : MonoBehaviour
         }
     }
 
+    public void UpdatePanelsByNode(List<Character> worldState)
+    {
+        foreach (var p in panels)
+        {
+            Destroy(p);
+        }
+
+        panels = new List<GameObject>();
+
+        foreach (var p in worldState)
+        {
+            AddPanel(p.Name);
+        }
+    }
+
     public void Delete(string name)
     {
         var panelToDel = panels.First(x => x.GetComponent<CharactersProperty>().Name == name);

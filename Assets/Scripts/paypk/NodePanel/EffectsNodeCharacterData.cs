@@ -19,8 +19,8 @@ public class EffectsNodeCharacterData : MonoBehaviour
 
     public void OnClick()
     {
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsNodeCharactersPanel.SetActive(false);
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().AddPanel(Name);
-        NodeData.instance.GetMyNodeData(ref ID, transform).EffectsPanel.SetActive(true);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsNodeCharactersPanel.SetActive(false);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().AddPanel(Name);
+        NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.SetActive(true);
     }
 }
