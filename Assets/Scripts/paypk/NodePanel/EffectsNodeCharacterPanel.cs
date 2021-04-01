@@ -1,6 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EffectsNodeCharacterPanel : MonoBehaviour
 {
@@ -26,6 +28,19 @@ public class EffectsNodeCharacterPanel : MonoBehaviour
             panels.Add(panel);
             panel.GetComponent<EffectsNodeCharacterData>().SetName(p);
         }
+
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        int count = panels.Count;
+        var countInTheRow = 6;
+        var r = (count / countInTheRow + count % countInTheRow - 3) * (cellSize + 40) + 25;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(400, r));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void ClearPanels()

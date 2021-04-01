@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,7 @@ using UnityEngine.UI;
 public class CharactersPanel : MonoBehaviour
 {
     public GameObject Panel;
+    public GameObject Parent;
 
     private List<GameObject> panels = new List<GameObject>();
 
@@ -30,6 +32,17 @@ public class CharactersPanel : MonoBehaviour
         {
             AddPanel(p.Name);
         }
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        int count = DataManager.instance.Characters.Count;
+        var r = (count / 7 + count % 7 - 1) * (cellSize + 40) + 25;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(340, r));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void UpdatePanelsByNode(List<Character> worldState)

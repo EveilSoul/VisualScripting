@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,7 +21,8 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
 
     public List<string> GetNotSelectedCharacters() => DataManager.instance.Characters.Select(x => x.Name).Except(characterNames).ToList();
     public List<string> GetSelectedCharactersToCondition() => characterNames.Except(NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().Names).ToList();
-    public List<string> GetSelectedCharactersToEffects() => characterNames.Except(NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Names).ToList(); 
+    public List<string> GetSelectedCharactersToEffects() => characterNames.Except(NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().Names).ToList();
+
 
     public void AddCharacter(string name)
     {
@@ -31,6 +33,18 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         characterNames.Add(name);
         if (DataManager.instance.Characters.Count == characterNames.Count)
             AddButton.SetActive(false);
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        int count = panels.Count;
+        var countInTheRow = 2;
+        var r = (count / countInTheRow + count % countInTheRow - 3) * (cellSize + 40) + 25;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(340, r));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void Delete(string name)
@@ -92,6 +106,8 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
             {
                 var propValue = new PropertyValue();
                 var charProp = pp.GetComponent<EffectsPanelCharacterProperty>();
+                if (charProp.Name == null || charProp.Name == "" || (charProp.Value == null || charProp.Value == ""))
+                    continue;
                 propValue.Name = charProp.Name;
                 propValue.PropertyType = charProp.PropertyType;
                 propValue.Value = (charProp.PropertyType == PropertyType.Int && charProp.OperationValue == null) ? "=" + charProp.Value : charProp.OperationValue + charProp.Value;
@@ -135,11 +151,13 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         if (!DataManager.instance.Nodes.Select(x => x.Id).Contains(id))
             return;
 
+        ClearAll();
+
         if (DataManager.instance.Characters.Count > characterNames.Count)
             AddButton.SetActive(true);
 
         var node = DataManager.instance.Nodes.First(x => x.Id == id);
-        foreach (var c in node.CharacterNames)
+        foreach (var c in node.CharacterNames.Distinct())
         {
             AddCharacter(c);
         }
@@ -147,12 +165,12 @@ public class NodeDescriptionCharactersPanel : MonoBehaviour
         text = node.Text;
         TextField.text = node.Text;
 
-        foreach (var p in node.Condition.NodeCharacters)
+        foreach (var p in node.Condition.NodeCharacters.Distinct())
         {
             NodeData.GetMyNodeData(ref ID, transform).ConditionPanel.GetComponent<ConditionPanel>().OpenExist(p.Name, p.PropertyValues);
         }
 
-        foreach (var p in node.Effect.NodeCharacters)
+        foreach (var p in node.Effect.NodeCharacters.Distinct())
         {
             NodeData.GetMyNodeData(ref ID, transform).EffectsPanel.GetComponent<EffectsPanel>().OpenExist(p.Name, p.PropertyValues);
         }

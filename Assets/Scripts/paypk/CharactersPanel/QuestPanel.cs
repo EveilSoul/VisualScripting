@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class QuestPanel: MonoBehaviour
 {
@@ -18,6 +19,15 @@ public class QuestPanel: MonoBehaviour
         panel.GetComponent<QuestValue>().Index = quest_Values.Count;
         panel.GetComponent<QuestValue>().Quest_Panel = this;
         quest_Values.Add(panel);
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(446, quest_Values.Count * cellSize));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void Remove(int index)

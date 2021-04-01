@@ -34,7 +34,7 @@ public class PropertiesListPanel : MonoBehaviour
     {
         var transformParent = Parent.GetComponent<RectTransform>();
         var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
-        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(472, DataManager.instance.Properties.Count * cellSize));
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(472, panels.Count * cellSize));
         transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 

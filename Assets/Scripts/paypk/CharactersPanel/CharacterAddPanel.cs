@@ -19,12 +19,11 @@ public class CharacterAddPanel : MonoBehaviour
     private bool isOpenedExist = false;
     private string prevName;
     private List<string> propertiesName;
-    private List<GameObject> panels;
+    private List<GameObject> panels = new List<GameObject>();
 
 
     private void OnEnable()
     {
-        panels = new List<GameObject>();
         propertiesName = DataManager.instance.Properties.Keys.ToList();
         SaveButton.interactable = false;
         NameField.text = "";
@@ -110,6 +109,16 @@ public class CharacterAddPanel : MonoBehaviour
         panels.Add(panel);
         if (panels.Count == propertiesName.Count)
             AddPropertyButton.interactable = false;
+
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(393, panels.Count * cellSize));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void Delete(string name)
