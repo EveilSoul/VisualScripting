@@ -42,7 +42,8 @@ public class TextGame : MonoBehaviour
     {
         var node = ConnectionManager.GetStartNode();
         node.WorldState = DataManager.instance.Characters.Clone();
-        displayedNode = node;
+        node.ApplyEffects();
+        instance.displayedNode = node;
         DisplayAction();
     }
 
