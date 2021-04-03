@@ -46,6 +46,15 @@ public class PropertyEditPanel : MonoBehaviour
         panel.GetComponentInChildren<InputField>().text = name;
         panels.Add(panel);
         currentIndex++;
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(330, panels.Count * cellSize));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void AddProperty()

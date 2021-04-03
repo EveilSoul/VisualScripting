@@ -267,7 +267,6 @@ public class ConnectionManager : MonoBehaviour
         int childCount = GetChildConnectionCount(info.StartPoint);
         if (childCount == 2)
         {
-            Debug.Log("new CP");
             OnCPAdded(info.StartPoint);
         }
         else if (childCount > 2)

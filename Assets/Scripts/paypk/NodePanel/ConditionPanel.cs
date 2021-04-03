@@ -24,6 +24,19 @@ public class ConditionPanel : MonoBehaviour
         panels.Add(panel);
         panel.GetComponent<ConditionCharacterPanel>().SetName(name);
         Names.Add(name);
+
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        int count = panels.Count;
+        var countInTheRow = 3;
+        var r = (count / countInTheRow + count % countInTheRow - 3) * (cellSize + 40) + 25;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(349, r));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void OpenExist(string name, List<PropertyValue> propertyValues)
@@ -33,6 +46,8 @@ public class ConditionPanel : MonoBehaviour
         panel.GetComponent<ConditionCharacterPanel>().SetName(name);
         panel.GetComponent<ConditionCharacterPanel>().OpenExistCharacter(name, propertyValues);
         Names.Add(name);
+
+        SetDynamicSize();
     }
 
     public List<string> GetMyProperties(string parentName, string name)

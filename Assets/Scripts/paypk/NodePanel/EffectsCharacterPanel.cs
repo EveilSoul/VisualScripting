@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,12 +19,11 @@ public class EffectsCharacterPanel : MonoBehaviour
     private bool inChange = false;
     private string prevName;
     private List<string> propertiesName;
-    public List<GameObject> panels;
+    public List<GameObject> panels = new List<GameObject>();
 
 
     public void SetName(string name)
     {
-        panels = new List<GameObject>();
         propertiesName = DataManager.instance.Properties.Keys.ToList();
         NameText.text = name;
         Name = name;
@@ -91,6 +91,16 @@ public class EffectsCharacterPanel : MonoBehaviour
         panel.GetComponent<EffectsPanelCharacterProperty>().Initial(Name);
         if (panels.Count == propertiesName.Count)
             AddPropertyButton.interactable = false;
+
+        SetDynamicSize();
+    }
+
+    private void SetDynamicSize()
+    {
+        var transformParent = Parent.GetComponent<RectTransform>();
+        var cellSize = Parent.GetComponent<GridLayoutGroup>().cellSize.y;
+        transformParent.sizeDelta = new Vector2(transformParent.sizeDelta.x, Math.Max(393, panels.Count * cellSize));
+        transformParent.anchoredPosition = new Vector2(0, -transformParent.sizeDelta.y / 2);
     }
 
     public void Delete(string name)
