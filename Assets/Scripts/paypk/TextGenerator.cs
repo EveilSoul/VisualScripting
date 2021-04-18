@@ -37,7 +37,7 @@ public class TextGenerator : MonoBehaviour
     static async Task<string> ReceiveAnswer()
     {
 
-        var Bot = new TelegramBotClient("1707297164:AAH_83Ig6zQ2k0y1fkusIbjO8DrbjIRToxg"); // инициализируем API
+        var Bot = new TelegramBotClient(ContinueGenerator.Token); // инициализируем API
         await Bot.SetWebhookAsync("");
         //Bot.SetWebhook(""); // Обязательно! убираем старую привязку к вебхуку для бота
         while (true)

@@ -58,7 +58,7 @@ public class ConnectionManager : MonoBehaviour
     private void Update()
     {
         if (currentLine != null)
-            currentLine.SetPosition(1, GraphController.MousePosition - offset);
+            currentLine.SetPosition(1, GraphController.MousePosition / GraphController.PanelScroll - offset * GraphController.PanelScroll);
 
         if (Input.GetMouseButton(0) && currentLine != null && (GraphController.IsPointerOutMenu || !GraphController.IsPointerOutNode))
             FinishConnection();
@@ -80,7 +80,7 @@ public class ConnectionManager : MonoBehaviour
     public void StartConnection()
     {
         StartPoint = Current;
-        offset = new Vector3(StartPoint.GetComponent<RectTransform>().sizeDelta.x / 2, 0, 0);
+        offset = new Vector3(StartPoint.GetComponent<RectTransform>().sizeDelta.x, 0, 0);
         currentLine = CreateConnectionLine();
         currentLine.SetPositions(new[] { GetOutputPosition(StartPoint), Vector3.zero });
 
@@ -151,6 +151,10 @@ public class ConnectionManager : MonoBehaviour
             Destroy(connection.ConnectionLine);
         }
         ConnectionDictionary = new Dictionary<Connection, HashSet<ConnectionInfo>>();
+
+        if (instance.currentLine != null)
+            Destroy(instance.currentLine.gameObject);
+        instance.currentLine = null;
     }
 
     public static void RemoveAllConnectionsByNode(Connection node)

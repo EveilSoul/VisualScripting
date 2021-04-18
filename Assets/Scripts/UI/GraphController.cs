@@ -7,6 +7,10 @@ using UnityEngine.UI;
 
 public class GraphController : MonoBehaviour
 {
+    public float MinScroll;
+    public float MaxScroll;
+    public float Sencivity;
+
     public Color NormalColor;
     public static Color NormalOutlineColor => instance.NormalColor;
     public Color ErrorColor;
@@ -14,7 +18,17 @@ public class GraphController : MonoBehaviour
 
     private static GraphController instance;
 
-    public static Vector3 MousePosition => Input.mousePosition - new Vector3(Screen.width, Screen.height) / 2;
+    public static Vector3 MousePosition => instance.GetMP();
+
+    public Vector3 GetMP()
+    {
+        ScrollRect scrollRect = Background.GetComponentInParent<ScrollRect>();
+        Vector2 sizeDelta = instance.Background.GetComponent<RectTransform>().sizeDelta;
+        float scroll = currentScroll;
+        var offset = new Vector3((1 - scrollRect.horizontalScrollbar.value) * sizeDelta.x - scroll, (1 - scrollRect.verticalScrollbar.value) * sizeDelta.y - scroll / 2) * PanelScroll * 0.85f;
+        Debug.Log(offset);
+        return Input.mousePosition - new Vector3(Screen.width, Screen.height) / 2 - offset / 2;
+    }
 
     public GameObject ActionNodePrefab;
     public GameObject RootNodePrefab;
@@ -37,6 +51,10 @@ public class GraphController : MonoBehaviour
     public static Dictionary<int, NodeData> NodeData;
 
     private Outline selectedNode;
+
+    public float currentScroll;
+
+    public static float PanelScroll => instance.MinScroll / instance.currentScroll;
 
     // Start is called before the first frame update
     void Awake()
@@ -88,6 +106,12 @@ public class GraphController : MonoBehaviour
         instance.selectedNode.effectColor = instance.NormalColor;
     }
 
+    internal static void Reset()
+    {
+        Nodes = new Dictionary<int, Node>();
+        InstantiateRootNode();
+    }
+
     public static void AddNodes(NodesData data)
     {
         //foreach (var node in FindObjectsOfType<Node>())
@@ -131,6 +155,13 @@ public class GraphController : MonoBehaviour
                 selectedNode.enabled = false;
             }
         }
+
+        var scroll = Input.GetAxis("Mouse ScrollWheel");
+        currentScroll += scroll * Sencivity;
+
+        currentScroll = Mathf.Clamp(currentScroll, MinScroll, MaxScroll);
+        Background.GetComponent<RectTransform>().sizeDelta = new Vector2(currentScroll * 2, currentScroll);
+        Background.transform.localScale = new Vector3(PanelScroll, PanelScroll, PanelScroll);
     }
 
     public static void SetPlayButton(bool value)
@@ -159,7 +190,7 @@ public class GraphController : MonoBehaviour
     {
         RectTransform menuTransform = menu.GetComponent<RectTransform>();
         var offset = new Vector3(menuTransform.sizeDelta.x, -menuTransform.sizeDelta.y, 0) / 2;
-        menuTransform.anchoredPosition = MousePosition + offset;
+        menuTransform.anchoredPosition = Input.mousePosition - new Vector3(Screen.width, Screen.height) / 2 + offset;
     }
 
     public void OnInstantiateNodeButtonClick(GameObject nodePrefab)
@@ -185,7 +216,7 @@ public class GraphController : MonoBehaviour
     {
         var nodeObj = Instantiate(nodePrefab, Background.transform);
         var panel = Instantiate(NodePanelPrefab, PanelBackground.transform);
-        nodeObj.GetComponent<RectTransform>().anchoredPosition = MousePosition;
+        nodeObj.GetComponent<RectTransform>().anchoredPosition = MousePosition / PanelScroll;
         Node node = nodeObj.GetComponent<Node>();
         QuestButtonColors.ApplyColorsToButton(false, node.GetComponentInChildren<Button>());
         node.InitializeID();

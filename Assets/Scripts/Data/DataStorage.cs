@@ -104,10 +104,12 @@ public class DataStorage : MonoBehaviour
         Data = DiagramInitializer.CreateDefaultDiargam();
         foreach (var node in GraphController.Nodes.Values)
         {
-            if (node.GetComponent<RootNode>() == null)
+            if (node != null && node.GetComponent<RootNode>() == null)
                 Destroy(node.gameObject);
         }
+        //GraphController.Reset();
         ConnectionManager.RemoveAll();
+        DataManager.Reset();
     }
 
     public static void Load(string name)

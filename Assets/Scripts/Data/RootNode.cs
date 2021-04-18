@@ -31,7 +31,22 @@ public class RootNode : Node
         IsBuldSuccess = true;
         instance.WorldState = DataManager.instance.Characters.Clone();
 
+        foreach (var node in GraphController.Nodes.Values)
+        {
+            if (node.gameObject != instance.gameObject)
+                node.ClearState();
+        }
+
         instance.StartRecursiveBuild();
+
+        foreach (var node in GraphController.Nodes.Values)
+        {
+            if (node.build_visitedCount.HasValue && node.build_visitedCount == 0)
+            {
+                node.OnErrorOccurred();
+                node.LogError("Нода недостижима");
+            }
+        }
 
         GraphController.SetPlayButton(IsBuldSuccess);
     }

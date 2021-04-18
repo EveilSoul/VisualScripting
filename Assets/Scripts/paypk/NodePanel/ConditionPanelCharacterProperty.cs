@@ -129,7 +129,11 @@ public class ConditionPanelCharacterProperty : MonoBehaviour
     public void OnTypeChoose(int index)
     {
         if (onSet)
+        {
+            onSet = false;
             return;
+        }
+            
 
         if (index == 0)
         {

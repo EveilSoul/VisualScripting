@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4081625780002760258}
   - component: {fileID: 4081625780002760253}
   - component: {fileID: -4893780852759997941}
-  m_Layer: 5
+  m_Layer: 6
   m_Name: Line
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -42,8 +42,8 @@ LineRenderer:
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_MotionVectors: 0
+  m_DynamicOccludee: 0
+  m_MotionVectors: 2
   m_LightProbeUsage: 0
   m_ReflectionProbeUsage: 0
   m_RayTracingMode: 0

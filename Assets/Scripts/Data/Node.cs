@@ -11,6 +11,8 @@ public class Node : MonoBehaviour, IPointerClickHandler
     public int Id;
     public GameObject Panel;
 
+    public int? build_visitedCount;
+
     private NodeDescriptionCharactersPanel panelMenu;
     public NodeDescriptionCharactersPanel PanelMenu
     {
@@ -79,6 +81,7 @@ public class Node : MonoBehaviour, IPointerClickHandler
         var outline = gameObject.GetComponent<UnityEngine.UI.Outline>();
         outline.enabled = true;
         outline.effectColor = GraphController.ErrorOutlineColor;
+        RootNode.IsBuldSuccess = false;
     }
 
     public void StartRecursiveBuild()
@@ -100,12 +103,12 @@ public class Node : MonoBehaviour, IPointerClickHandler
         if(successChilds.Count == 0)
         {
             OnErrorOccurred();
-            LogError($"Состояние мира в одной из ветвей в действии {Id} не проходит условия ни одного из потомков");
+            LogError($"Состояние мира в одной из ветвей в действии не проходит условия ни одного из потомков");
         }
         else if (successChilds.Count > 1 && successChilds.Any(x => x.Node.Panel.GetComponentInChildren<BranchDescription>(true).Text.text == ""))
         {
             OnErrorOccurred();
-            LogError($"Действие {Id} имеет несколько потомков с подходящими услвовиями, однако не везде определены действия/реплики для перехода");
+            LogError($"Действие имеет несколько потомков с подходящими услвовиями, однако не везде определены действия/реплики для перехода");
 
             foreach (var ch in successChilds)
                 ch.Node.CheckCondition();
@@ -185,12 +188,26 @@ public class Node : MonoBehaviour, IPointerClickHandler
         }
     }
 
+    public void ClearState()
+    {
+        var all = Panel.GetComponentsInChildren<Button>(true);
+        Panel.GetComponentsInChildren<Button>(true).First(x => x.name == "ErrorButton").interactable = false;
+        Panel.GetComponentsInChildren<Text>(true).First(x => x.name == "ErrorText").text = "";
+        build_visitedCount = null;
+    }
+
     public bool CheckCondition()
     {
+        if (!build_visitedCount.HasValue)
+            build_visitedCount = 0;
+
         var nodeData = DataManager.instance.Nodes.FirstOrDefault(x => x.Id == Id);
         var condition = nodeData.Condition;
         if (condition.NodeCharacters == null)
+        {
+            build_visitedCount++;
             return true;
+        }
         if (WorldState != null)
         {
             foreach (var character in condition.NodeCharacters)
@@ -255,12 +272,15 @@ public class Node : MonoBehaviour, IPointerClickHandler
             Debug.LogError($"World State is null at {ToString()}");
             return false;
         }
+        build_visitedCount++;
         return true;
     }
 
-    private void LogError(string message)
+    public void LogError(string message)
     {
-        Debug.LogError(message);
+        Panel.GetComponentsInChildren<Button>(true).First(x => x.name == "ErrorButton").interactable = true;
+        Panel.GetComponentsInChildren<Text>(true).First(x => x.name == "ErrorText").text = message;
+        //Debug.LogError(message);
     }
 
 
